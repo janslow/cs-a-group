@@ -46,4 +46,8 @@ public class RDistanceCommand implements Command {
 	}
 
 	public short getDistance() { return distance; }
+	
+	@Override
+	public String toString() {
+		return String.format("RDISTANCE(%d cm)", distance); }
 }

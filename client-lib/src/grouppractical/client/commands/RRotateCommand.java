@@ -91,4 +91,9 @@ public class RRotateCommand implements Command {
 	 * @return 16-bit integer between 0 and 65535
 	 */
 	public short getAngleSerial() { return (short)convert(angle,MIN_DEGREES,MAX_DEGREES,MIN_INT,MAX_INT); }
+	
+	@Override
+	public String toString() {
+		//TODO: Fix output
+		return String.format("RROTATE(%f¡ clockwise)", angle); }
 }

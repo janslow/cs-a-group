@@ -29,4 +29,8 @@ public class RStopCommand implements Command {
 		bytes[0] = getCommandType().toChar();
 		return bytes;
 	}
+	
+	@Override
+	public String toString() {
+		return "RSTOP()"; }
 }

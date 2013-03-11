@@ -71,4 +71,8 @@ public class RSpeedCommand implements Command {
 	 * @return Forward speed (11-bit + sign) of right motor
 	 */
 	public short getRightSpeed() { return right; }
+	
+	@Override
+	public String toString() {
+		return String.format("RSPEED(%d left, %d right)", left, right); }
 }

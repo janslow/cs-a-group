@@ -8,7 +8,7 @@ package grouppractical.client.commands;
  */
 public class RSpeedCommand implements Command {
 	/** Minimum and Maximum speed of robot (in an arbitrary unit) (12-bit signed integer) */
-	public static final short MIN = -2048, MAX = 2047;
+	public static final short MIN = -2047, MAX = 2047;
 	/** Speed to set each side of the robot to (12-bit signed integer) */
 	private final short left, right;
 	
@@ -20,14 +20,14 @@ public class RSpeedCommand implements Command {
 	public RSpeedCommand(short left, short right) {
 		//Forces values to be within the allowed range
 		if (left > MAX) left = MAX; if (right > MAX) right = MAX;
-		if (left < MIN) left = MIN; if (right > MAX) right = MAX;
+		if (left < MIN) left = MIN; if (right < MIN) right = MIN;
 		this.left = left;
 		this.right = right;
 	}
 
 	@Override
 	public CommandType getCommandType() {
-		return CommandType.RDISTANCE; }
+		return CommandType.RSPEED; }
 	
 	/**
 	 * <p>Serializes the command into an array of characters</p>
@@ -48,15 +48,15 @@ public class RSpeedCommand implements Command {
 		//Command Type
 		bytes[0] = getCommandType().toChar();
 		//MSB of left speed
-		bytes[1] = (char)((Math.abs(left) & 0xFF0) >> 4);
+		bytes[1] = (char)((Math.abs(left) & 0x7F8) >> 3);
 		//MSB of right speed
-		bytes[2] = (char)((Math.abs(right) & 0xFF0) >> 4);
+		bytes[2] = (char)((Math.abs(right) & 0x7F8) >> 3);
 		
 		//Calculate the least significant bits of 
 		int left4 = (Math.abs(left) & 0x7) << 5, right4 = (Math.abs(right) & 0x7) << 2,
 				leftDir = left > 0 ? 0x02 : 0x00, rightDir = right > 0 ? 0x01 : 0x00;
 		//Use bitwise or to join each part of byte3 together
-		bytes[3] = (char) (left4 ^ right4 ^ leftDir ^ rightDir);
+		bytes[3] = (char) (left4 | right4 | leftDir | rightDir);
 		
 		return bytes;
 	}
@@ -75,4 +75,17 @@ public class RSpeedCommand implements Command {
 	@Override
 	public String toString() {
 		return String.format("RSPEED(%d left, %d right)", left, right); }
+	
+	@Override
+	public boolean equals(Object that) {
+		if (this == that) return true;
+		if (that == null || !that.getClass().equals(RSpeedCommand.class)) return false;
+		RSpeedCommand rthat = (RSpeedCommand)that;
+		return rthat.getLeftSpeed() == this.getLeftSpeed() && rthat.getRightSpeed() == this.getRightSpeed();
+	}
+	
+	@Override
+	public int hashCode() {
+		return Integer.valueOf(left ^ right).hashCode();
+	}
 }

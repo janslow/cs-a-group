@@ -33,4 +33,15 @@ public class RStopCommand implements Command {
 	@Override
 	public String toString() {
 		return "RSTOP()"; }
+	
+	@Override
+	public boolean equals(Object that) {
+		if (this == that) return true;
+		return that != null && that.getClass().equals(RStopCommand.class);
+	}
+	
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

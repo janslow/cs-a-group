@@ -14,3 +14,5 @@ and serialize(), which serializes the command in a standard way, to produce an a
 The class CommandParser is a thread-safe class, which can have a thread writing characters to it and a thread reading the parsed Commands from it.
 The CommandParser will recieve characters (probably from an InputStream from a client) and, when it recieves the correct number of characters for the specified command type,
 it will construct a new array and add it to a buffer until a second thread reads it.
+
+All Command classes are tested using JUnit 4 (by test suite groupractical.tests.client.command.AllCommandTests).

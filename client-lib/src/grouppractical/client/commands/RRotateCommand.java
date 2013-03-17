@@ -9,10 +9,10 @@ package grouppractical.client.commands;
 public class RRotateCommand implements Command {
 	/** Minimum rotation in degrees, radians and serialized integer */
 	public static final double MIN_DEGREES = -359.98901, MIN_RADIANS = -6.28299;
-	public static final int MIN_INT = Short.MIN_VALUE + 1;
+	public static final short MIN_INT = Short.MIN_VALUE + 1;
 	/** Maximum rotation in degrees, radians and serialized integer */
 	public static final double MAX_DEGREES = 359.98901, MAX_RADIANS = 6.28299;
-	public static final int MAX_INT = Short.MAX_VALUE;
+	public static final short MAX_INT = Short.MAX_VALUE;
 	
 	/** Angle of clockwise rotation as a serialized integer. Invariant is that MIN_INT <= angle <= MAX_INT */
 	private final short angle;

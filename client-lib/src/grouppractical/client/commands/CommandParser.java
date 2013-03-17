@@ -1,40 +1,55 @@
 package grouppractical.client.commands;
 
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class CommandParser {
+	/** Queue to store parsed Commands in */
 	private final Queue<Command> q;
 	
 	/** Array of chars that have been received already */
 	private char[] chars;
+	/** CommandType of the command which is currently being parsed */
 	private CommandType cmdType;
+	/** Number of characters that have currently been parsed, for this command */
 	private int i;
-	private final Semaphore mutex;
 	
+	private final Semaphore semWriter;
+	
+	/**
+	 * Constructs a new CommandParser
+	 */
 	public CommandParser() {
-		//TODO: Construct Queue
-		//TODO: Construct Semaphores
-		mutex = null;
-		q = null;
+		/* Thread-safe queue, allowing access from multiple threads, without blocking
+		 * Also means a second semaphore is not required for reading */
+		q = new ConcurrentLinkedQueue<Command>();
+		semWriter = new Semaphore(1);
 	}
 	/**
-	 * Gets whether the CommandParser has a command waiting to be read
-	 * @return True if a command is ready, otherwise false
+	 * Adds an entire string to the buffer
+	 * @param s String to add
+	 * @throws InterruptedException Thrown if the acquisition of the semaphore has been interrupted
 	 */
-	public boolean isEmpty() {
-		return q.size() > 0;
+	public void enqueue(String s) throws InterruptedException {
+		enqueue(s.toCharArray());
 	}
 	/**
-	 * 'Pops' the currently generated command off of the parser
-	 * @return
-	 * @throws InterruptedException 
+	 * Adds an entire char[] to the buffer
+	 * @param cs Char array to add
+	 * @throws InterruptedException Thrown if the acquisition of the semaphore has been interrupted
 	 */
-	public Command pop() throws InterruptedException {
-		//TODO: Check documentation for java.util.Queue
-		return q.poll();
+	public void enqueue(char[] cs) throws InterruptedException {
+		for (int i = 0; i < cs.length; i++)
+			enqueue(cs[i]);
 	}
-	public void addChar(char c) {
+	/**
+	 * Adds an extra char to the buffer to be processed
+	 * @param c Character to add
+	 * @throws InterruptedException Thrown if the acquisition of the semaphore has been interrupted 
+	 */
+	public void enqueue(char c) throws InterruptedException {
+		semWriter.acquire();
 		// Forces the char to be an 8-bit char
 		c = validateChar(c);
 		/* If there is not an array of chars which have already been read, 
@@ -43,7 +58,7 @@ public class CommandParser {
 			// Get the command type represented by the char
 			cmdType = CommandType.getByChar(c);
 			// If the char does not represent a valid command type, ignore it
-			if (cmdType == null) return;
+			if (cmdType == null) { semWriter.release(); return; }
 			/* Construct a new array of chars to hold the next values, only containing
 			 * this character */
 			chars = new char[cmdType.getSize()];
@@ -54,9 +69,8 @@ public class CommandParser {
 			chars[i++] = c;
 		
 		// If the array is full, i.e., all chars for this command have been read, generate the command
-		
-		if (i > chars.length) {
-			if (chars.length == CommandType.RDISTANCE.getSize() && chars[0] == CommandType.RDISTANCE.toChar()) {
+		if (i >= chars.length) {
+			if (chars.length == cmdType.getSize() && chars[0] == cmdType.toChar()) {
 				switch (cmdType) {
 				case RDISTANCE:
 					q.add(parseRDistance(chars));
@@ -74,7 +88,60 @@ public class CommandParser {
 			}
 			chars = null;
 		}
+		semWriter.release();
 	}
+	/**
+	 * Clears any unparsed characters from the input buffer
+	 * @throws InterruptedException Thrown if the acquisition of the semaphore is interrupted
+	 */
+	public void clearInput() throws InterruptedException {
+		semWriter.acquire();
+		chars = null;
+		semWriter.release();
+	}
+	/**
+	 * Gets the number of unparsed characters that ar stored in the object
+	 * @return Size of input buffer
+	 * @throws InterruptedException Thrown if the acquisition of the semaphore is interrupted
+	 */
+	public int inputSize() throws InterruptedException {
+		semWriter.acquire();
+		//If the chars array has not been  set then no chars have been entered.
+		int s = 0;
+		//Otherwise the size of the input buffer is the current position in the chars array, i
+		if (chars != null) s = this.i;
+		semWriter.release();
+		return s;
+	}
+	/**
+	 * Gets whether the CommandParser has a command waiting to be read
+	 * @return True if a command is ready, otherwise false 
+	 */
+	public boolean isOutputEmpty() {
+		//Note q.size() is O(n), q.isEmpty() is O(1)
+		return q.isEmpty();
+	}
+	/**
+	 * Gets the number of commands which have been parsed, but are waiting to be dequeued
+	 * @return
+	 */
+	public int outputSize() {
+		//Note q.size() is O(n)
+		return q.size();
+	}
+	/**
+	 * 'Pops' the currently generated command off of the parser
+	 * @return Null if 
+	 */
+	public Command dequeue() {
+		Command r = q.poll();
+		return r;
+	}
+	/**
+	 * Checks that a char is valid
+	 * @param c Char to validate
+	 * @return True if the char represents an 8-bit unsigned integer, otherwise false
+	 */
 	private char validateChar(char c) {
 		if (c < 0) return 0;
 		else if (c > 255) return 255;
@@ -87,8 +154,9 @@ public class CommandParser {
 	 */
 	private RRotateCommand parseRRotate(char[] chars) {
 		//Generates the serialized angle from the MSB and the LSB
-		int x = (chars[1] << 8) ^ chars[2];
-		return RRotateCommand.constructByInteger(x);
+		int x = (chars[1] << 7) + (chars[2] >> 1);
+		if ((chars[2] & 0x01) == 0) x = -x;
+		return new RRotateCommand((short) x);
 	}
 	/**
 	 * Constructs a RDistanceCommand from an array of chars
@@ -96,9 +164,10 @@ public class CommandParser {
 	 * @return A distance command, or null if the char array is invalid
 	 */
 	private RDistanceCommand parseRDistance(char[] chars) {
-		//Generates the distance from the MSB and the LSB
-		short x = (short) ((chars[1] << 8) ^ chars[2]);
-		return new RDistanceCommand(x);
+		//Generates the magnitude of the distance from the MSB and the LSB
+		int x = (chars[1] << 7) + ((chars[2] & 0xFE) >> 1);
+		if ((chars[2] & 0x01) == 0) x = -x;
+		return new RDistanceCommand((short) x);
 	}
 	/**
 	 * Constructs a RSpeedCommand from an array of chars
@@ -107,8 +176,8 @@ public class CommandParser {
 	 */
 	private RSpeedCommand parseRSpeed(char[] chars) {
 		//Generates the speeds from the char array
-		int l = (chars[1] << 3) ^ (chars[3] >> 5); if ((chars[3] & 0x02) == 0) l = -l;
-		int r = (chars[2] << 3) ^ ((chars[3] & 0x1C) >> 2); if ((chars[3] & 0x01) == 0) r = -r;
+		int l = (chars[1] << 3) | (chars[3] >> 5); if ((chars[3] & 0x02) == 0) l = -l;
+		int r = (chars[2] << 3) | ((chars[3] & 0x1C) >> 2); if ((chars[3] & 0x01) == 0) r = -r;
 		return new RSpeedCommand((short)l,(short)r);
 	}
 }

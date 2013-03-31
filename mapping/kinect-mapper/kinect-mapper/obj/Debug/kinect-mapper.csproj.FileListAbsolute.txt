@@ -1,0 +1,13 @@
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\bin\Debug\kinect-mapper.exe.config
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper.csprojResolveAssemblyReference.cache
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\MainWindow.baml
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\MainWindow.g.cs
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\App.g.cs
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper_MarkupCompile.cache
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper.g.resources
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect_mapper.Properties.Resources.resources
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper.csproj.GenerateResource.Cache
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\bin\Debug\kinect-mapper.exe
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\bin\Debug\kinect-mapper.pdb
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper.exe
+C:\Users\Pete\Documents\GitHub\cs-a-group\mapping\kinect-mapper\kinect-mapper\obj\Debug\kinect-mapper.pdb

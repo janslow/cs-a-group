@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kinect-mapper", "kinect-mapper\kinect-mapper.csproj", "{2BC7AE48-0DB1-436E-A4C7-DE777B3A54EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BC7AE48-0DB1-436E-A4C7-DE777B3A54EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC7AE48-0DB1-436E-A4C7-DE777B3A54EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC7AE48-0DB1-436E-A4C7-DE777B3A54EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC7AE48-0DB1-436E-A4C7-DE777B3A54EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

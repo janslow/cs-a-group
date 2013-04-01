@@ -1,4 +1,4 @@
-package grouppractical.server.test;
+package grouppractical.server;
 
 import grouppractical.server.MultiServerThread;
 import grouppractical.server.ServerCommandRequest;

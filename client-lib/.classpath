@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/utils-lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

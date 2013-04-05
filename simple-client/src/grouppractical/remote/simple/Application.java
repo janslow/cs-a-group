@@ -80,10 +80,10 @@ public class Application implements KeyListener {
 			sendCommand(new RDistanceCommand((short) -5));
 			break;
 		case KeyEvent.VK_LEFT:
-			sendCommand(new RRotateCommand((short) -30));
+			sendCommand(RRotateCommand.constructFromDegrees(-30));
 			break;
 		case KeyEvent.VK_RIGHT:
-			sendCommand(new RRotateCommand((short) 30));
+			sendCommand(RRotateCommand.constructFromDegrees(-30));
 			break;
 		case KeyEvent.VK_ESCAPE:
 			sendCommand(new RStopCommand());

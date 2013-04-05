@@ -18,9 +18,8 @@ public class RRotateCommand implements Command {
 	private final short angle;
 	
 	/**
-	 * <p>Constructs a new RotateCommand object, with an angle in degrees.</p>
-	 * <p>If the angle is out of the allowed range, the relevant bound is chosen (i.e., -370¡ becomes -360¡)
-	 * @param angle The angle in degrees
+	 * <p>Constructs a new RotateCommand object, with an angle as a serialized integer between MIN_INT and MAX_INT.</p>
+	 * @param angle The angle as a serialized integer
 	 */
 	public RRotateCommand(short angle) {
 		this.angle = angle;

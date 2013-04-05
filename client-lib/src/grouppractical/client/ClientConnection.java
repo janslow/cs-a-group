@@ -8,14 +8,17 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.event.EventListenerList;
+
 /**
  * Class to open a connection to the server to send commands to
  * @author janslow
  *
  */
 public class ClientConnection {
-	private Socket socket;
-	private PrintWriter out;
+	private final Socket socket;
+	private final PrintWriter out;
+	private final EventListenerList listeners;
 	
 	/**
 	 * Constructs a new ClientConnection
@@ -27,6 +30,7 @@ public class ClientConnection {
 	public ClientConnection(String host, String name) throws UnknownHostException, IOException {
 		socket = new Socket(host, MultiServerThread.PORT);
 		out = new PrintWriter(socket.getOutputStream(), true);
+		listeners = new EventListenerList();
 	}
 	
 	/**
@@ -45,5 +49,34 @@ public class ClientConnection {
 	public void sendCommand(Command cmd) {
 		if (cmd != null)
 			out.println(cmd.serialize());
+	}
+	
+	/**
+	 * Adds a RobotListener, which will be called when the robot is updated
+	 * @param l RobotListener to add
+	 */
+	public void addRobotListener(RobotListener l) {
+		listeners.add(RobotListener.class, l);
+	}
+	/**
+	 * Removes a RobotListener
+	 * @param l RobotListener to remove
+	 */
+	public void removeRobotListener(RobotListener l) {
+		listeners.remove(RobotListener.class, l);
+	}
+	/**
+	 * Adds a MapListener, which will be called when the map is updated
+	 * @param l MapListener to add
+	 */
+	public void addMapListener(MapListener l) {
+		listeners.add(MapListener.class, l);
+	}
+	/**
+	 * Removes a MapListener
+	 * @param l MapListener to remove
+	 */
+	public void removeMapListener(MapListener l) {
+		listeners.remove(MapListener.class, l);
 	}
 }

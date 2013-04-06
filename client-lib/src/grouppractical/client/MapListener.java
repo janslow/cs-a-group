@@ -10,10 +10,13 @@ import java.util.EventListener;
 public interface MapListener extends EventListener {
 	/**
 	 * Called when a position on the map is updated
-	 * @param x X coordinate of updated position
-	 * @param y Y coordinate of updated position
-	 * @param occupied True if the position is now occupied, otherwise false
-	 * @param certainty Certainty that the value of 'occupied' is correct
+	 * @param position Updated position object
 	 */
-	public void updatePosition(int x, int y, boolean occupied, int certainty);
+	public void updatePosition(Position position);
+	
+	/**
+	 * Called when the entire map is updated
+	 * @param map New Map object
+	 */
+	public void updateMap(Map map);
 }

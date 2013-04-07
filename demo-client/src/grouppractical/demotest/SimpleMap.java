@@ -15,7 +15,7 @@ public class SimpleMap implements Map {
 	private final int W;
 	private final int H;
 	private Boolean[][] obstacle;
-	private int[][] certainty;
+	private short[][] certainty;
 	private long currentVersion;
 	
 	/** 
@@ -28,7 +28,7 @@ public class SimpleMap implements Map {
 		W = width;
 		H = height;
 		obstacle = new Boolean[W][H];
-		certainty = new int[W][H];
+		certainty = new short[W][H];
 		for (int i = 0; i < W; i ++) {
 			for (int j = 0; j < H; j ++) {
 				obstacle[i][j] = false;

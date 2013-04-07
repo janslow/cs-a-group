@@ -6,11 +6,16 @@ package grouppractical.client;
  *
  */
 public class Position {
+	/**
+	 * Range of certainty values. min <= certainty < max
+	 */
+	public static short MIN_CERTAINTY = 0, MAX_CERTAINTY = 256;
+	
 	private final int x;
 	private final int y;
 	
 	private final boolean occupied;
-	private final int certainty;
+	private final short certainty;
 	
 	/**
 	 * Constructs a new position object
@@ -19,7 +24,7 @@ public class Position {
 	 * @param occupied Is the position occupied?
 	 * @param certainty Certainty that the position is or isn't occupied
 	 */
-	public Position(int x, int y, boolean occupied, int certainty) {
+	public Position(int x, int y, boolean occupied, short certainty) {
 		this.x = x; this.y = y;
 		this.occupied = occupied;
 		this.certainty = certainty;

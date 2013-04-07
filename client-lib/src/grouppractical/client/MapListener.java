@@ -15,7 +15,7 @@ public interface MapListener extends EventListener {
 	public void updatePosition(Position position);
 	
 	/**
-	 * Called when the entire map is updated
+	 * Called when the entire map is updated (including when the dimensions are changed)
 	 * @param map New Map object
 	 */
 	public void updateMap(Map map);

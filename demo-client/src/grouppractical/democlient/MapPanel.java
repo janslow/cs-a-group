@@ -78,7 +78,7 @@ public class MapPanel extends JPanel implements MapListener {
 	 * @param y the y coordinate of the block
 	 * @param unit the width, in pixels, of each coordinate block in the image
 	 */
-	private void updateImgBlock(Boolean obstacle, int certainty, Graphics2D g, int x, int y, int unit) {
+	private void updateImgBlock(Boolean obstacle, short certainty, Graphics2D g, int x, int y, int unit) {
 		// get Colour and AlphaComposite to restore after update
 		Color oldColour = g.getColor();
 		AlphaComposite oldAlphaC = (AlphaComposite) g.getComposite();
@@ -102,8 +102,8 @@ public class MapPanel extends JPanel implements MapListener {
 	      
 	      // set new alpha (transparency parameter)
 	      float alpha = 0.5f;
-	      if (obstacle) { alpha += (((float)certainty)/200f); }
-	      else { alpha = 1.0f - (((float)certainty)/200f); }
+	      if (obstacle) { alpha += (Position.certaintyToPercent(certainty)/2f); }
+	      else { alpha = 1.0f - (Position.certaintyToPercent(certainty)/2f); }
 	      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 	    }
     

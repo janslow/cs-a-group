@@ -7,9 +7,41 @@ package grouppractical.client;
  */
 public class Position {
 	/**
-	 * Range of certainty values. min <= certainty < max
+	 * Range of certainty values. min <= certainty <= max
 	 */
-	public static short MIN_CERTAINTY = 0, MAX_CERTAINTY = 256;
+	//Because the certainty is encoded to an 8-bit character, min >= 0 and max <= 256 
+	public final static short MIN_CERTAINTY = 0, MAX_CERTAINTY = 127;
+	
+	/**
+	 * Converts a certainty value into a percentage
+	 * @param c Certainty value, where MIN_CERTAINTY <= c <= MAX_CERTAINTY
+	 * @return Certainty value, where 0.0 <= percent <= 1.0
+	 */
+	public static float certaintyToPercent(short c) {
+		if (c > MAX_CERTAINTY) c = MAX_CERTAINTY;
+		if (c < MIN_CERTAINTY) c = 0;
+		
+		float x = c - MIN_CERTAINTY;
+		float y = MAX_CERTAINTY - MIN_CERTAINTY;
+		
+		return x/y;
+	}
+	/**
+	 * Converts a percentage certainty value into a certainty value
+	 * @param c Certainty value, where 0.0 <= percent <= 1.0
+	 * @return Certainty value, where MIN_CERTAINTY <= c <= MAX_CERTAINTY
+	 */
+	public static short percentToCertainty(float p) {
+		float y = MAX_CERTAINTY - MIN_CERTAINTY;
+		float x = p * y;
+		
+		short c = (short) (x + MIN_CERTAINTY);
+		
+		if (c > MAX_CERTAINTY) c = MAX_CERTAINTY;
+		if (c < MIN_CERTAINTY) c = 0;
+		
+		return c;
+	}
 	
 	private final int x;
 	private final int y;
@@ -50,5 +82,10 @@ public class Position {
 	 * Certainty that the position is or isn't occupied
 	 * @return Certainty of the value of isOccupied()
 	 */
-	public int getCertainty() { return certainty; }
+	public short getCertainty() { return certainty; }
+	/**
+	 * Certainty that the position is or isn't occupied
+	 * @return Certainty of the value of isOccupied(), between 0 and 1
+	 */
+	public float getCertaintyPercent() { return certaintyToPercent(certainty); }
 }

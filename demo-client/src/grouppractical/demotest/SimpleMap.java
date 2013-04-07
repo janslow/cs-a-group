@@ -32,7 +32,7 @@ public class SimpleMap implements Map {
 		for (int i = 0; i < W; i ++) {
 			for (int j = 0; j < H; j ++) {
 				obstacle[i][j] = false;
-				certainty[i][j] = 0;
+				certainty[i][j] = Position.MIN_CERTAINTY;
 			}
 		}
 	}

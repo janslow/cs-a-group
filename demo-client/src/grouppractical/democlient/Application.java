@@ -35,11 +35,11 @@ public class Application implements KeyListener {
 	 */
 	public Application(String host, String name) {
 		//Constructs new log window
-		console = new Console("Remote Java Client");
+		console = new Console("Demo Client Console");
 		console.pack();
 		console.setVisible(true);
 		console.addKeyListener(this);
-		console.println("Client Console Created");
+		console.println("Demo Client Console Created");
 		
 		//Attempts to connect to server
 		ClientConnection conn = null;

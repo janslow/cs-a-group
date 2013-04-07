@@ -27,7 +27,7 @@ public class Application implements KeyListener {
 	 */
 	public Application(String host, String name) {
 		//Constructs new output window
-		console = new Console("Remote Java Client");
+		console = new Console("Simple Client Console");
 		console.pack();
 		console.setVisible(true);
 		console.addKeyListener(this);

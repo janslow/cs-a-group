@@ -1,5 +1,6 @@
 package grouppractical.client;
 
+
 /**
  * Immutable class representing a position on the map
  * @author janslow
@@ -88,4 +89,23 @@ public class Position {
 	 * @return Certainty of the value of isOccupied(), between 0 and 1
 	 */
 	public float getCertaintyPercent() { return certaintyToPercent(certainty); }
+	
+	@Override
+	public String toString() {
+		return String.format("position(x: %d, y: %d, %f % %s)", getX(), getY(),
+				getCertaintyPercent(), isOccupied() ? "occupied" : "empty"); }
+	
+	@Override
+	public boolean equals(Object that) {
+		if (this == that) return true;
+		if (that == null || !that.getClass().equals(Position.class)) return false;
+		Position pthat = (Position)that;
+		return pthat.getX() == this.getX() && pthat.getY() == this.getY() &&
+				pthat.getCertainty() == this.getCertainty() && pthat.isOccupied() == this.isOccupied();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (getX()+1) * (getY()+1) * (getCertainty()+1) * (isOccupied() ? 1 : 2);
+	}
 }

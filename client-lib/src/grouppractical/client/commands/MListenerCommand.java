@@ -1,5 +1,11 @@
 package grouppractical.client.commands;
 
+/**
+ * <p>Immutable class representing the command to register a client to receive updates.</p>
+ * <p>Clients can either receive a one-off update or all future updates (as well as the entire current map)</p>
+ * @author jay
+ *
+ */
 public class MListenerCommand implements Command {
 	private final boolean updates;
 	

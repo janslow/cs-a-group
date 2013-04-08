@@ -2,8 +2,11 @@ package grouppractical.tests.client.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import grouppractical.client.Position;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
+import grouppractical.client.commands.MListenerCommand;
+import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RDistanceCommand;
 import grouppractical.client.commands.RRotateCommand;
 import grouppractical.client.commands.RSpeedCommand;
@@ -41,11 +44,56 @@ public class CommandParserCaseTest {
 				{ "RSPEED(0,MAX)", new RSpeedCommand((short) 0,RSpeedCommand.MAX) },
 				{ "RSPEED(MAX,MAX)", new RSpeedCommand(RSpeedCommand.MAX,RSpeedCommand.MAX) },
 				//Test RSTOP() command
-				{ "RSTOP()", new RStopCommand() }
+				{ "RSTOP()", new RStopCommand() },
+				//Test MLISTENER(updates) command
+				{ "MLISTENER(updates)", new MListenerCommand(true) },
+				{ "MLISTENER(no updates)", new MListenerCommand(false) }
+				//Test MPOSITION(position) command
 		};
-		return Arrays.asList(data);
+		Object[][][] xss = new Object[][][] {
+				data,
+				positionCommandData()
+		};
+		int size = 0;
+		for (Object[][] xs : xss)
+			size += xs.length;
+		Object[][] ys = new Object[size][];
+		int i = 0;
+		for (Object[][] xs : xss)
+			for (Object[] x : xs)
+				ys[i++] = x;
+		
+		return Arrays.asList(ys);
 	}
 	
+	protected static Object[][] positionCommandData() {
+		//Create lists of valid values to test
+		int[] xs = new int[] { MPositionCommand.MIN_X - 1, MPositionCommand.MIN_X,
+				(MPositionCommand.MIN_X + MPositionCommand.MAX_X) / 2, MPositionCommand.MAX_X,
+				MPositionCommand.MAX_X + 1 },
+			ys = new int[] { MPositionCommand.MIN_Y - 1, MPositionCommand.MIN_Y,
+				(MPositionCommand.MIN_Y + MPositionCommand.MAX_Y) / 2, MPositionCommand.MAX_Y,
+				MPositionCommand.MAX_Y + 1 };
+		short[] certs = new short[] { Position.MIN_CERTAINTY - 1, Position.MIN_CERTAINTY,
+				(Position.MIN_CERTAINTY + Position.MAX_CERTAINTY) / 2, Position.MAX_CERTAINTY };
+		boolean[] occupieds = new boolean[] { true, false };
+		
+		//Constructs list of (String,Command), which is the test name and command to test
+		Object[][] data = new Object[xs.length * ys.length * certs.length * 2][2];
+		
+		//Creates all commands
+		int i = 0;
+		for (int x : xs)
+			for (int y : ys)
+				for (short cert : certs)
+					for (boolean o : occupieds) {
+						Position p = new Position(x, y, o, cert);
+						MPositionCommand cmd = new MPositionCommand(p);
+						data[i][0] = cmd.toString();
+						data[i++][1] = cmd;
+					}
+		return data;
+	}
 	protected final Command cmd;
 	protected final String testname;
 	

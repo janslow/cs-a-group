@@ -1,5 +1,7 @@
 package grouppractical.client.commands;
 
+import grouppractical.client.Position;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -84,6 +86,12 @@ public class CommandParser {
 				case RSTOP:
 					q.add(new RStopCommand());
 					break;
+				case MLISTENER:
+					q.add(parseMListener(chars));
+					break;
+				case MPOSITION:
+					q.add(parseMPosition(chars));
+					break;
 				}
 			}
 			chars = null;
@@ -123,7 +131,7 @@ public class CommandParser {
 	}
 	/**
 	 * Gets the number of commands which have been parsed, but are waiting to be dequeued
-	 * @return
+	 * @return Number of commands in output queue
 	 */
 	public int outputSize() {
 		//Note q.size() is O(n)
@@ -179,5 +187,26 @@ public class CommandParser {
 		int l = (chars[1] << 3) | (chars[3] >> 5); if ((chars[3] & 0x02) == 0) l = -l;
 		int r = (chars[2] << 3) | ((chars[3] & 0x1C) >> 2); if ((chars[3] & 0x01) == 0) r = -r;
 		return new RSpeedCommand((short)l,(short)r);
+	}
+	/**
+	 * Constructs a MListenerCommand from an array of chars
+	 * @param chars An array of chars representing a Map Listener command
+	 * @return A map listener command, or null if the char array is invalid
+	 */
+	private MListenerCommand parseMListener(char[] chars) {
+		boolean updates = (chars[1] & 0x01) > 0;
+		return new MListenerCommand(updates);
+	}
+	private MPositionCommand parseMPosition(char[] chars) {
+		//X-coordinate
+		int x = ((chars[1] & 0xFE) << 7) ^ chars[2];
+		if ((chars[1] & 0x01) > 0) x *= -1;
+		int y = ((chars[3] & 0xFE) << 7) ^ chars[4];
+		if ((chars[3] & 0x01) > 0) y *= -1;
+		
+		int certainty = chars[5] >> 1;
+		boolean occupied = (chars[5] & 0x01) > 0;
+		
+		return new MPositionCommand(new Position(x,y,occupied,(short) certainty));
 	}
 }

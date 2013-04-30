@@ -1,6 +1,6 @@
 package grouppractical.client.commands;
 
-import grouppractical.client.Position;
+import grouppractical.utils.map.Position;
 
 /**
  * <p>Immutable class representing an update to a position on the map.</p>

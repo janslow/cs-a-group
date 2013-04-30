@@ -1,4 +1,4 @@
-package grouppractical.client;
+package grouppractical.utils.map;
 
 /**
  * Read-only interface representing a map

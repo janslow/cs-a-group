@@ -1,9 +1,9 @@
 package grouppractical.tests.client.commands;
 
 import static org.junit.Assert.assertEquals;
-import grouppractical.client.Position;
 import grouppractical.client.commands.CommandType;
 import grouppractical.client.commands.RStatusCommand;
+import grouppractical.utils.map.Position;
 
 import java.util.Arrays;
 import java.util.Collection;

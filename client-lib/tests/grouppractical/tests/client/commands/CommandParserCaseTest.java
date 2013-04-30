@@ -2,7 +2,6 @@ package grouppractical.tests.client.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import grouppractical.client.Position;
 import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
@@ -15,6 +14,7 @@ import grouppractical.client.commands.RRotateCommand;
 import grouppractical.client.commands.RStatusCommand;
 import grouppractical.client.commands.RStopCommand;
 import grouppractical.client.commands.RUnlockCommand;
+import grouppractical.utils.map.Position;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package grouppractical.client.commands;
 
-import grouppractical.client.Position;
+import grouppractical.utils.map.Position;
 
 import static grouppractical.utils.StandardOps.convert;
 

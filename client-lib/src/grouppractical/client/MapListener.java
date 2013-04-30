@@ -1,5 +1,8 @@
 package grouppractical.client;
 
+import grouppractical.utils.map.Map;
+import grouppractical.utils.map.Position;
+
 import java.util.EventListener;
 
 /**

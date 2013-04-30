@@ -1,0 +1,5 @@
+1. Complete server interaction design
+2. Decide on storage of map (mirror copy held on server and kinect client???)
+3. Decide on and implement synchronization of mapping/moving/server/kinect client stuff
+4. Adapt kinect updates to remove crap leading entries
+5. 

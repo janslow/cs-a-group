@@ -22,7 +22,7 @@ import java.net.UnknownHostException;
  */
 public class Application implements KeyListener {
 	public static void main(String[] args) {
-		new Application("localhost","Remote Java Client");
+		new Application("192.168.52.1","Remote Java Client");
 	}
 	
 	private final Console console;

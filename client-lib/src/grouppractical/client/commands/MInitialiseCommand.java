@@ -7,7 +7,7 @@ package grouppractical.client.commands;
  * @author jay
  *
  */
-public class MInitializeCommand implements Command {
+public class MInitialiseCommand implements Command {
 	@Override
 	public CommandType getCommandType() {
 		return CommandType.MINITIALIZE;
@@ -29,7 +29,7 @@ public class MInitializeCommand implements Command {
 	@Override
 	public boolean equals(Object that) {
 		if (this == that) return true;
-		return that != null && that.getClass().equals(MInitializeCommand.class);
+		return that != null && that.getClass().equals(MInitialiseCommand.class);
 	}
 	
 	@Override

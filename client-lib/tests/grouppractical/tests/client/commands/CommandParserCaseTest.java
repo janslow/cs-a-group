@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import grouppractical.client.Position;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
-import grouppractical.client.commands.MInitializeCommand;
+import grouppractical.client.commands.MInitialiseCommand;
 import grouppractical.client.commands.MListenerCommand;
 import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RDistanceCommand;
@@ -51,7 +51,7 @@ public class CommandParserCaseTest {
 				{ "MLISTENER(updates)", new MListenerCommand(true) },
 				{ "MLISTENER(no updates)", new MListenerCommand(false) },
 				//Test MINITIALIZE() command
-				{ "MINITIALIZE()", new MInitializeCommand() }
+				{ "MINITIALIZE()", new MInitialiseCommand() }
 		};
 		Object[][][] xss = new Object[][][] {
 				data,

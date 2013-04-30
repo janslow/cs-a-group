@@ -96,7 +96,7 @@ public class CommandParser {
 					q.add(parseRStatus(chars));
 					break;
 				case MINITIALIZE:
-					q.add(new MInitializeCommand());
+					q.add(new MInitialiseCommand());
 					break;
 				}
 			}

@@ -4,7 +4,7 @@
 package grouppractical.tests.client.commands;
 
 import grouppractical.client.commands.CommandType;
-import grouppractical.client.commands.MInitializeCommand;
+import grouppractical.client.commands.MInitialiseCommand;
 
 import org.junit.Test;
 
@@ -14,11 +14,11 @@ import org.junit.Test;
  */
 public class MInitializeCommandTest extends CommandTest {
 	public MInitializeCommandTest() {
-		super(new MInitializeCommand(), CommandType.MINITIALIZE, "MINITIALIZE()",true);
+		super(new MInitialiseCommand(), CommandType.MINITIALIZE, "MINITIALIZE()",true);
 	}
 	
 	@Test
 	public void testEquals() {
-		super.testEquals(new MInitializeCommand(),Integer.valueOf(0));
+		super.testEquals(new MInitialiseCommand(),Integer.valueOf(0));
 	}
 }

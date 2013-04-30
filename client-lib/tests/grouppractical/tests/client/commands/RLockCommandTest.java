@@ -4,7 +4,7 @@
 package grouppractical.tests.client.commands;
 
 import grouppractical.client.commands.CommandType;
-import grouppractical.client.commands.RStopCommand;
+import grouppractical.client.commands.RLockCommand;
 
 import org.junit.Test;
 
@@ -14,11 +14,11 @@ import org.junit.Test;
  */
 public class RLockCommandTest extends CommandTest {
 	public RLockCommandTest() {
-		super(new RStopCommand(), CommandType.RLOCK, "RLOCK()",true);
+		super(new RLockCommand(), CommandType.RLOCK, "RLOCK()",true);
 	}
 	
 	@Test
 	public void testEquals() {
-		super.testEquals(new RStopCommand(),Integer.valueOf(0));
+		super.testEquals(new RLockCommand(),Integer.valueOf(0));
 	}
 }

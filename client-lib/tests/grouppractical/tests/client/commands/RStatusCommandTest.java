@@ -12,11 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import static grouppractical.utils.StandardOps.convert;
 
 @RunWith(Parameterized.class)
 public class RStatusCommandTest extends CommandTest {
 	protected final Position position;
 	protected final float voltage;
+	protected final short angle;
 	protected final boolean isValid;
 	
 	protected final RStatusCommand cmd;
@@ -27,16 +29,20 @@ public class RStatusCommandTest extends CommandTest {
 	 * @param voltage Voltage of the RStatusCommand
 	 * @param isValid Is this a valid command
 	 */
-	public RStatusCommandTest(Position position, float voltage, boolean isValid) {
+	public RStatusCommandTest(Position position, float voltage, short angle, boolean isValid) {
 		//Calls super constructor
-		super(new RStatusCommand(position,voltage), CommandType.RSTATUS,
-				String.format("RSTATUS(x: %d, y: %d, %fV)", position.getX(), position.getY(), voltage),
+		super(new RStatusCommand(position,voltage,angle), CommandType.RSTATUS,
+				String.format("RSTATUS(x: %d, y: %d, a: %f¡, %fV)", position.getX(), position.getY(), 
+						convert(angle,RStatusCommand.MIN_INT,RStatusCommand.MAX_INT,RStatusCommand.MIN_DEGREES,
+								RStatusCommand.MAX_DEGREES),
+						voltage),
 				isValid);
 		
 		//Gets MPositionCommand from super
 		this.cmd = (RStatusCommand)super.cmd;
 		this.position = position;
 		this.voltage = voltage;
+		this.angle = angle;
 		this.isValid = isValid;
 	}
 	
@@ -54,20 +60,25 @@ public class RStatusCommandTest extends CommandTest {
 				RStatusCommand.MAX_Y + 1 };
 		float[] volts = new float[] { RStatusCommand.MIN_BATT - 1, RStatusCommand.MIN_BATT,
 				RStatusCommand.MAX_BATT, RStatusCommand.MAX_BATT + 1 };
+		short[] angles = new short[] { RStatusCommand.MIN_INT - 1, RStatusCommand.MIN_INT,
+				(RStatusCommand.MIN_INT + RStatusCommand.MAX_INT) / 2, RStatusCommand.MAX_INT,
+				(short) (RStatusCommand.MAX_INT + 1)};
 		
 		//Constructs list of (Command,Bool), which is the position and whether the position is valid
-		Object[][] data = new Object[xs.length * ys.length * volts.length][3];
+		Object[][] data = new Object[xs.length * ys.length * volts.length * angles.length][4];
 		
 		//Creates all positions
 		int i = 0;
 		for (int x : xs)
 			for (int y : ys)
-				for (float volt : volts) {
-					Position p = new Position(x, y, false, (short) 0);
-					data[i][0] = p;
-					data[i][1] = volt;
-					data[i++][2] = isValid(p,volt);
-				}
+				for (float volt : volts)
+					for (short angle : angles) {
+						Position p = new Position(x, y, false, (short) 0);
+						data[i][0] = p;
+						data[i][1] = volt;
+						data[i][2] = angle;
+						data[i++][3] = isValid(p,volt);
+					}
 		return Arrays.asList(data);
 	}
 	
@@ -127,7 +138,7 @@ public class RStatusCommandTest extends CommandTest {
 				position.getCertainty());
 		float differentVoltage = RStatusCommand.MAX_BATT - voltage;
 		
-		super.testEquals(new RStatusCommand(similarPosition, voltage), new RStatusCommand(differentPosition, voltage),
-				new RStatusCommand(similarPosition, differentVoltage), new RStatusCommand(differentPosition, differentVoltage));
+		super.testEquals(new RStatusCommand(similarPosition, voltage, angle), new RStatusCommand(differentPosition, voltage, angle),
+				new RStatusCommand(similarPosition, differentVoltage, angle), new RStatusCommand(differentPosition, differentVoltage, angle));
 	}
 }

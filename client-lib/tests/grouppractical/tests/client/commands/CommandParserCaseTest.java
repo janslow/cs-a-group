@@ -3,15 +3,15 @@ package grouppractical.tests.client.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import grouppractical.client.Position;
+import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
+import grouppractical.client.commands.ConnectCommand;
 import grouppractical.client.commands.MInitialiseCommand;
-import grouppractical.client.commands.MListenerCommand;
 import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RDistanceCommand;
 import grouppractical.client.commands.RLockCommand;
 import grouppractical.client.commands.RRotateCommand;
-import grouppractical.client.commands.RSpeedCommand;
 import grouppractical.client.commands.RStatusCommand;
 import grouppractical.client.commands.RStopCommand;
 import grouppractical.client.commands.RUnlockCommand;
@@ -37,21 +37,8 @@ public class CommandParserCaseTest {
 				{ "RROTATE(MIN)", new RRotateCommand(RRotateCommand.MIN_INT) },
 				{ "RROTATE(0)", new RRotateCommand((short) 0) },
 				{ "RROTATE(MAX)", new RRotateCommand(RRotateCommand.MAX_INT) },
-				//Test RSPEED(left,right) command
-				{ "RSPEED(MIN,MIN)", new RSpeedCommand(RSpeedCommand.MIN,RSpeedCommand.MIN) },
-				{ "RSPEED(0,MIN)", new RSpeedCommand((short) 0,RSpeedCommand.MIN) },
-				{ "RSPEED(MAX,MIN)", new RSpeedCommand(RSpeedCommand.MAX,RSpeedCommand.MIN) },
-				{ "RSPEED(MIN,0)", new RSpeedCommand(RSpeedCommand.MIN,(short) 0) },
-				{ "RSPEED(0,0)", new RSpeedCommand((short) 0,(short) 0) },
-				{ "RSPEED(MAX,0)", new RSpeedCommand(RSpeedCommand.MAX,(short) 0) },
-				{ "RSPEED(MIN,MAX)", new RSpeedCommand(RSpeedCommand.MIN,RSpeedCommand.MAX) },
-				{ "RSPEED(0,MAX)", new RSpeedCommand((short) 0,RSpeedCommand.MAX) },
-				{ "RSPEED(MAX,MAX)", new RSpeedCommand(RSpeedCommand.MAX,RSpeedCommand.MAX) },
 				//Test RSTOP() command
 				{ "RSTOP()", new RStopCommand() },
-				//Test MLISTENER(updates) command
-				{ "MLISTENER(updates)", new MListenerCommand(true) },
-				{ "MLISTENER(no updates)", new MListenerCommand(false) },
 				//Test MINITIALIZE() command
 				{ "MINITIALIZE()", new MInitialiseCommand() },
 				//Test RLOCK() command
@@ -62,9 +49,11 @@ public class CommandParserCaseTest {
 		Object[][][] xss = new Object[][][] {
 				data,
 				//Test MPOSITION(position) command
-				//mPositionCommandData(),
+//				mPositionCommandData(),
 				//Test RSTATUS(position,voltage) command
-				rStatusCommandData()
+//				rStatusCommandData(),
+				//Test CONNECT(clientType) command
+				connectCommandData()
 		};
 		int size = 0;
 		for (Object[][] xs : xss)
@@ -117,20 +106,39 @@ public class CommandParserCaseTest {
 		float[] volts = new float[] { RStatusCommand.MIN_BATT - 1, RStatusCommand.MIN_BATT,
 				(RStatusCommand.MIN_BATT + RStatusCommand.MAX_BATT) / 2, RStatusCommand.MAX_BATT,
 				RStatusCommand.MAX_BATT + 1};
+		short[] angles = new short[] { RStatusCommand.MIN_INT - 1, RStatusCommand.MIN_INT,
+				(RStatusCommand.MIN_INT + RStatusCommand.MAX_INT) / 2, RStatusCommand.MAX_INT,
+				(short) (RStatusCommand.MAX_INT + 1)};
 		
 		//Constructs list of (String,Command), which is the test name and command to test
-		Object[][] data = new Object[xs.length * ys.length * volts.length][2];
+		Object[][] data = new Object[xs.length * ys.length * volts.length * angles.length][2];
 		
 		//Creates all commands
 		int i = 0;
 		for (int x : xs)
 			for (int y : ys)
-				for (float volt : volts) {
-					Position p = new Position(x, y, false, (short) Position.MAX_CERTAINTY);
-					RStatusCommand cmd = new RStatusCommand(p,volt);
-					data[i][0] = cmd.toString();
-					data[i++][1] = cmd;
-				}
+				for (float volt : volts) 
+					for (short angle : angles) {
+						Position p = new Position(x, y, false, (short) Position.MAX_CERTAINTY);
+						RStatusCommand cmd = new RStatusCommand(p,volt,angle);
+						data[i][0] = cmd.toString();
+						data[i++][1] = cmd;
+					}
+		return data;
+	}
+	public static Object[][] connectCommandData() {
+		ClientType[] clientTypes = ClientType.values();
+		
+		//Constructs list of (Command,Bool), which is the position and whether the position is valid
+		Object[][] data = new Object[clientTypes.length][2];
+		
+		//Creates all positions
+		int i = 0;
+		for (ClientType clientType : clientTypes) {
+			ConnectCommand cmd = new ConnectCommand(clientType);
+			data[i][0] = cmd.toString();
+			data[i++][1] = cmd;
+		}
 		return data;
 	}
 	protected final Command cmd;

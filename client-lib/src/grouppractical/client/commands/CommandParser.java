@@ -80,9 +80,6 @@ public class CommandParser {
 				case RROTATE:
 					q.add(parseRRotate(chars));
 					break;
-				case RSPEED:
-					q.add(parseRSpeed(chars));
-					break;
 				case RSTOP:
 					q.add(new RStopCommand());
 					break;
@@ -95,14 +92,14 @@ public class CommandParser {
 				case RUNLOCK:
 					q.add(new RUnlockCommand());
 					break;
-				case MLISTENER:
-					q.add(parseMListener(chars));
-					break;
 				case MPOSITION:
 					q.add(parseMPosition(chars));
 					break;
 				case MINITIALIZE:
 					q.add(new MInitialiseCommand());
+					break;
+				case CONNECT:
+					q.add(parseConnect(chars));
 					break;
 				}
 			}
@@ -190,26 +187,6 @@ public class CommandParser {
 		return new RDistanceCommand((short) x);
 	}
 	/**
-	 * Constructs a RSpeedCommand from an array of chars
-	 * @param chars An array of chars representing a speed command
-	 * @return A speed command, or null if the char array is invalid
-	 */
-	private RSpeedCommand parseRSpeed(char[] chars) {
-		//Generates the speeds from the char array
-		int l = (chars[1] << 3) | (chars[3] >> 5); if ((chars[3] & 0x02) == 0) l = -l;
-		int r = (chars[2] << 3) | ((chars[3] & 0x1C) >> 2); if ((chars[3] & 0x01) == 0) r = -r;
-		return new RSpeedCommand((short)l,(short)r);
-	}
-	/**
-	 * Constructs a MListenerCommand from an array of chars
-	 * @param chars An array of chars representing a Map Listener command
-	 * @return A map listener command, or null if the char array is invalid
-	 */
-	private MListenerCommand parseMListener(char[] chars) {
-		boolean updates = (chars[1] & 0x01) > 0;
-		return new MListenerCommand(updates);
-	}
-	/**
 	 * Constructs a MPostionCommand from an array of chars
 	 * @param chars An array of chars representing a Map Position command
 	 * @return A map position command, or null if the char array is invalid
@@ -243,6 +220,16 @@ public class CommandParser {
 		
 		float voltage = (float)chars[5] / 20;
 		
-		return new RStatusCommand(new Position(x,y,false, Position.MAX_CERTAINTY), voltage);
+		//Generates the serialized angle from the MSB and the LSB
+		int angle = (chars[6] << 7) + (chars[7] >> 1);
+		if ((chars[7] & 0x01) == 0) x = -x;
+		
+		return new RStatusCommand(new Position(x,y,false, Position.MAX_CERTAINTY), voltage, (short) angle);
+	}
+	
+	private ConnectCommand parseConnect(char[] chars) {
+		ClientType clientType = ClientType.getByChar(chars[1]);
+		
+		return new ConnectCommand(clientType);
 	}
 }

@@ -15,18 +15,18 @@ public enum CommandType {
 	RDISTANCE(0x02,3),
 	/** Rotates the robot by a specified angle */
 	RROTATE(0x03,3),
-	/** Registers a map listener with the server */
-	MLISTENER(0x04,2),
 	/** Updates a position on the map */
 	MPOSITION(0x05,6),
 	/** Updates the status of the robot */
-	RSTATUS(0x06,6),
+	RSTATUS(0x06,8),
 	/** Initializes a map */
 	MINITIALIZE(0x07,1),
 	/** Locks the robot */
 	RLOCK(0x08,1),
 	/** Unlock the robot */
-	RUNLOCK(0x09,1);
+	RUNLOCK(0x09,1),
+	/** Connects client to the server */
+	CONNECT(0x0A,2);
 	/** Unique ID of the commad */
 	final int id, size;
 	

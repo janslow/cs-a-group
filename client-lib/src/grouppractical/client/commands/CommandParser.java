@@ -92,6 +92,12 @@ public class CommandParser {
 				case MPOSITION:
 					q.add(parseMPosition(chars));
 					break;
+				case RSTATUS:
+					q.add(parseRStatus(chars));
+					break;
+				case MINITIALIZE:
+					q.add(new MInitializeCommand());
+					break;
 				}
 			}
 			chars = null;
@@ -197,10 +203,16 @@ public class CommandParser {
 		boolean updates = (chars[1] & 0x01) > 0;
 		return new MListenerCommand(updates);
 	}
+	/**
+	 * Constructs a MPostionCommand from an array of chars
+	 * @param chars An array of chars representing a Map Position command
+	 * @return A map position command, or null if the char array is invalid
+	 */
 	private MPositionCommand parseMPosition(char[] chars) {
 		//X-coordinate
 		int x = ((chars[1] & 0xFE) << 7) ^ chars[2];
 		if ((chars[1] & 0x01) > 0) x *= -1;
+		//Y-coordinate
 		int y = ((chars[3] & 0xFE) << 7) ^ chars[4];
 		if ((chars[3] & 0x01) > 0) y *= -1;
 		
@@ -208,5 +220,23 @@ public class CommandParser {
 		boolean occupied = (chars[5] & 0x01) > 0;
 		
 		return new MPositionCommand(new Position(x,y,occupied,(short) certainty));
+	}
+	
+	/**
+	 * Constructs a MPostionCommand from an array of chars
+	 * @param chars An array of chars representing a Map Position command
+	 * @return A map position command, or null if the char array is invalid
+	 */
+	private RStatusCommand parseRStatus(char[] chars) {
+		//X-coordinate
+		int x = ((chars[1] & 0xFE) << 7) ^ chars[2];
+		if ((chars[1] & 0x01) > 0) x *= -1;
+		//Y-coordinate
+		int y = ((chars[3] & 0xFE) << 7) ^ chars[4];
+		if ((chars[3] & 0x01) > 0) y *= -1;
+		
+		float voltage = (float)chars[5] / 20;
+		
+		return new RStatusCommand(new Position(x,y,false, Position.MAX_CERTAINTY), voltage);
 	}
 }

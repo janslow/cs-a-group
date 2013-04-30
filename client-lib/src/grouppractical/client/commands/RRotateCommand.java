@@ -52,16 +52,6 @@ public class RRotateCommand implements Command {
 	@Override
 	public CommandType getCommandType() { return CommandType.RROTATE; }
 	
-	/**
-	 * <p>Serializes the command into an array of characters</p>
-	 * <p>The array is of length three, with the elements representing the following</p>
-	 * <ol>
-	 * 	<li>The command type (always RROTATE)</li>
-	 * 	<li>The Most Significant Byte (MSB) of the angle</li>
-	 * 	<li>The Least Significant Bits (LSB) of the angle (first 7 bits) and the direction (last bit)</li>
-	 * </ol>
-	 * @return An array of characters representing the command
-	 */
 	@Override
 	public char[] serialize() {
 		char[] bytes = new char[3];

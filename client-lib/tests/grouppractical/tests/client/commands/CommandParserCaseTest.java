@@ -5,11 +5,13 @@ import static org.junit.Assert.assertNotNull;
 import grouppractical.client.Position;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
+import grouppractical.client.commands.MInitializeCommand;
 import grouppractical.client.commands.MListenerCommand;
 import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RDistanceCommand;
 import grouppractical.client.commands.RRotateCommand;
 import grouppractical.client.commands.RSpeedCommand;
+import grouppractical.client.commands.RStatusCommand;
 import grouppractical.client.commands.RStopCommand;
 
 import java.util.Arrays;
@@ -47,12 +49,16 @@ public class CommandParserCaseTest {
 				{ "RSTOP()", new RStopCommand() },
 				//Test MLISTENER(updates) command
 				{ "MLISTENER(updates)", new MListenerCommand(true) },
-				{ "MLISTENER(no updates)", new MListenerCommand(false) }
-				//Test MPOSITION(position) command
+				{ "MLISTENER(no updates)", new MListenerCommand(false) },
+				//Test MINITIALIZE() command
+				{ "MINITIALIZE()", new MInitializeCommand() }
 		};
 		Object[][][] xss = new Object[][][] {
 				data,
-				positionCommandData()
+				//Test MPOSITION(position) command
+				mPositionCommandData(),
+				//Test RSTATUS(position,voltage) command
+				rStatusCommandData()
 		};
 		int size = 0;
 		for (Object[][] xs : xss)
@@ -66,7 +72,7 @@ public class CommandParserCaseTest {
 		return Arrays.asList(ys);
 	}
 	
-	protected static Object[][] positionCommandData() {
+	protected static Object[][] mPositionCommandData() {
 		//Create lists of valid values to test
 		int[] xs = new int[] { MPositionCommand.MIN_X - 1, MPositionCommand.MIN_X,
 				(MPositionCommand.MIN_X + MPositionCommand.MAX_X) / 2, MPositionCommand.MAX_X,
@@ -92,6 +98,33 @@ public class CommandParserCaseTest {
 						data[i][0] = cmd.toString();
 						data[i++][1] = cmd;
 					}
+		return data;
+	}
+	protected static Object[][] rStatusCommandData() {
+		//Create lists of valid values to test
+		int[] xs = new int[] { MPositionCommand.MIN_X - 1, MPositionCommand.MIN_X,
+				(MPositionCommand.MIN_X + MPositionCommand.MAX_X) / 2, MPositionCommand.MAX_X,
+				MPositionCommand.MAX_X + 1 },
+			ys = new int[] { MPositionCommand.MIN_Y - 1, MPositionCommand.MIN_Y,
+				(MPositionCommand.MIN_Y + MPositionCommand.MAX_Y) / 2, MPositionCommand.MAX_Y,
+				MPositionCommand.MAX_Y + 1 };
+		float[] volts = new float[] { RStatusCommand.MIN_BATT - 1, RStatusCommand.MIN_BATT,
+				(RStatusCommand.MIN_BATT + RStatusCommand.MAX_BATT) / 2, RStatusCommand.MAX_BATT,
+				RStatusCommand.MAX_BATT + 1};
+		
+		//Constructs list of (String,Command), which is the test name and command to test
+		Object[][] data = new Object[xs.length * ys.length * volts.length][2];
+		
+		//Creates all commands
+		int i = 0;
+		for (int x : xs)
+			for (int y : ys)
+				for (float volt : volts) {
+					Position p = new Position(x, y, false, (short) Position.MAX_CERTAINTY);
+					RStatusCommand cmd = new RStatusCommand(p,volt);
+					data[i][0] = cmd.toString();
+					data[i++][1] = cmd;
+				}
 		return data;
 	}
 	protected final Command cmd;

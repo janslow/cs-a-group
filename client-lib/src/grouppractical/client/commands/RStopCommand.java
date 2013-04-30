@@ -12,16 +12,6 @@ public class RStopCommand implements Command {
 	public CommandType getCommandType() {
 		return CommandType.RSTOP; }
 	
-	/**
-	 * <p>Serializes the command into an array of characters</p>
-	 * <p>The array is of length three, with the elements representing the following</p>
-	 * <ol>
-	 * 	<li>The command type (always RDISTANCE)</li>
-	 * 	<li>The Most Significant Byte (MSB) of the distance (in cm)</li>
-	 * 	<li>The Least Significant Byte (LSB) of the distance (in cm)</li>
-	 * </ol>
-	 * @return An array of characters representing the command
-	 */
 	@Override
 	public char[] serialize() {
 		char[] bytes = new char[1];

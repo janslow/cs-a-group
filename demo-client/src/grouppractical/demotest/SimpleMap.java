@@ -93,6 +93,12 @@ public class SimpleMap implements Map {
 		}
 		
 	}
+
+	@Override
+	public void setPosition(Position p) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
 	
 }
 

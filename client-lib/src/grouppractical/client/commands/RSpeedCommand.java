@@ -29,19 +29,6 @@ public class RSpeedCommand implements Command {
 	public CommandType getCommandType() {
 		return CommandType.RSPEED; }
 	
-	/**
-	 * <p>Serializes the command into an array of characters</p>
-	 * <p>The array is of length three, with the elements representing the following</p>
-	 * <ol>
-	 * 	<li>The command type (always RDISTANCE)</li>
-	 * 	<li>The Most Significant Byte (MSB) of the distance (in cm)</li>
-	 * 	<li>The Least Significant Byte (MSB) of the distance (in cm)</li>
-	 * </ol>
-	 * <p>The last three bytes can be visualised as "LLLLLLL RRRRRRR lllrrrss" where "L" represents a bit in the Left MSB,
-	 * "R" in the Right MSB, "l" and "r" are least significant bits in the left and right speeds, respectively. "ss" is the
-	 * the sign/direction of the two speeds (left first, then right, 1 if forward, otherwise 0)</p>
-	 * @return An array of characters representing the command
-	 */
 	@Override
 	public char[] serialize() {
 		char[] bytes = new char[4];

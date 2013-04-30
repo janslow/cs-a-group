@@ -18,8 +18,15 @@ public enum CommandType {
 	/** Registers a map listener with the server */
 	MLISTENER(0x04,2),
 	/** Updates a position on the map */
-	MPOSITION(0x05,6);
-	
+	MPOSITION(0x05,6),
+	/** Updates the status of the robot */
+	RSTATUS(0x06,6),
+	/** Initializes a map */
+	MINITIALIZE(0x07,1),
+	/** Locks the robot */
+	RLOCK(0x08,1),
+	/** Unlock the robot */
+	RUNLOCK(0x09,1);
 	/** Unique ID of the commad */
 	final int id, size;
 	

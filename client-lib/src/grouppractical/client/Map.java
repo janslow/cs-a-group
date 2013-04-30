@@ -21,4 +21,9 @@ public interface Map extends Iterable<Position> {
 	 * @return Position object representing the specified coordinates
 	 */
 	public Position getPosition(int x, int y);
+	/**
+	 * Sets a position on a map
+	 * @param p Position object representing a coordinate
+	 */
+	public void setPosition(Position p);
 }

@@ -20,7 +20,7 @@ public class Position {
 	 */
 	public static float certaintyToPercent(short c) {
 		if (c > MAX_CERTAINTY) c = MAX_CERTAINTY;
-		if (c < MIN_CERTAINTY) c = 0;
+		if (c < MIN_CERTAINTY) c = MIN_CERTAINTY;
 		
 		float x = c - MIN_CERTAINTY;
 		float y = MAX_CERTAINTY - MIN_CERTAINTY;
@@ -39,7 +39,7 @@ public class Position {
 		short c = (short) (x + MIN_CERTAINTY);
 		
 		if (c > MAX_CERTAINTY) c = MAX_CERTAINTY;
-		if (c < MIN_CERTAINTY) c = 0;
+		if (c < MIN_CERTAINTY) c = MIN_CERTAINTY;
 		
 		return c;
 	}
@@ -60,6 +60,8 @@ public class Position {
 	public Position(int x, int y, boolean occupied, short certainty) {
 		this.x = x; this.y = y;
 		this.occupied = occupied;
+		certainty = certainty > MAX_CERTAINTY ? MAX_CERTAINTY : certainty;
+		certainty = certainty < MIN_CERTAINTY ? MIN_CERTAINTY : certainty;
 		this.certainty = certainty;
 	}
 	

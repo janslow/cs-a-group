@@ -1,5 +1,7 @@
 package grouppractical.client.commands;
 
+import static grouppractical.utils.StandardOps.convert;
+
 /**
  * <p>Immutable class representing the command to rotate the robot clockwise.</p>
  * <p>A single command can turn the robot >= 360¡ counter-clockwise or <360¡ clockwise</p>
@@ -31,22 +33,6 @@ public class RRotateCommand implements Command {
 	public static RRotateCommand constructFromDegrees(double angle) {
 		short s = (short) convert(angle,MIN_DEGREES,MAX_DEGREES,MIN_INT,MAX_INT);
 		return new RRotateCommand(s);
-	}
-
-	/**
-	 * Converts an angle x (where minx <= x < maxx) to an angle y (where miny <= y <= maxy)
-	 * @param x Angle x to convert
-	 * @param minx Minimum (inclusive) value of x
-	 * @param maxx Maximum (exclusive) value of x
-	 * @param miny Minimum (inclusive) value of y
-	 * @param maxy Maximum (exclusive) value of y
-	 * @return Converted angle y
-	 */
-	public static double convert(double x, double minx, double maxx, double miny, double maxy) {
-		//Converts x to intermediate value z (where 0 <= z < 1)
-		double z = (x - minx) / (maxx - minx);
-		//Converts z to final value y
-		return (z * (maxy - miny)) + miny;
 	}
 	
 	@Override

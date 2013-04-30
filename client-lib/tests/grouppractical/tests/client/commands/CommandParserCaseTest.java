@@ -9,10 +9,12 @@ import grouppractical.client.commands.MInitialiseCommand;
 import grouppractical.client.commands.MListenerCommand;
 import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RDistanceCommand;
+import grouppractical.client.commands.RLockCommand;
 import grouppractical.client.commands.RRotateCommand;
 import grouppractical.client.commands.RSpeedCommand;
 import grouppractical.client.commands.RStatusCommand;
 import grouppractical.client.commands.RStopCommand;
+import grouppractical.client.commands.RUnlockCommand;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,12 +53,16 @@ public class CommandParserCaseTest {
 				{ "MLISTENER(updates)", new MListenerCommand(true) },
 				{ "MLISTENER(no updates)", new MListenerCommand(false) },
 				//Test MINITIALIZE() command
-				{ "MINITIALIZE()", new MInitialiseCommand() }
+				{ "MINITIALIZE()", new MInitialiseCommand() },
+				//Test RLOCK() command
+				{ "RLOCK()", new RLockCommand() },
+				//Test RLOCK() command
+				{ "RUNLOCK()", new RUnlockCommand() }
 		};
 		Object[][][] xss = new Object[][][] {
 				data,
 				//Test MPOSITION(position) command
-				mPositionCommandData(),
+				//mPositionCommandData(),
 				//Test RSTATUS(position,voltage) command
 				rStatusCommandData()
 		};

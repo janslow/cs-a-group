@@ -86,14 +86,20 @@ public class CommandParser {
 				case RSTOP:
 					q.add(new RStopCommand());
 					break;
+				case RSTATUS:
+					q.add(parseRStatus(chars));
+					break;
+				case RLOCK:
+					q.add(new RLockCommand());
+					break;
+				case RUNLOCK:
+					q.add(new RUnlockCommand());
+					break;
 				case MLISTENER:
 					q.add(parseMListener(chars));
 					break;
 				case MPOSITION:
 					q.add(parseMPosition(chars));
-					break;
-				case RSTATUS:
-					q.add(parseRStatus(chars));
 					break;
 				case MINITIALIZE:
 					q.add(new MInitialiseCommand());

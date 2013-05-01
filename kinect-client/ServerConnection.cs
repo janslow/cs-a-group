@@ -15,6 +15,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private const byte RSTATUS = (byte)0x06;
         private const byte RLOCK = (byte)0x08;
         private const byte RUNLOCK = (byte)0x09;
+        private const byte CONNECT = (byte)0x0B;
 
         // Ranges for conversion of serialized angle to degrees
         private const double MIN_INT = -32767;
@@ -56,7 +57,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 socket.Connect(remoteEndPoint);
                 // create and send connected packet
                 byte[] connectedMsg = new byte[2];
-                connectedMsg[0] = (byte)0x0B;
+                connectedMsg[0] = CONNECT;
                 connectedMsg[1] = (byte)0x02;     
                 SendPacket(connectedMsg);
                 Console.WriteLine("Connected to server!");

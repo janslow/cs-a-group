@@ -65,9 +65,8 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	public MapPanel(ClientConnection conn, int unitWidth) {
 		// add listener
 		conn.addMapListener(this);
-		
+		conn.addRobotListener(this);
 		PIX_WIDTH = unitWidth;
-		// TODO Send MAP_LISTENER command to server to receive initial map 
 	}
 
 	/**
@@ -128,7 +127,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		// if graphics null, update map hasn't been called yet, so wait for server to respond to MAP_LISTENER command. Otherwise update.
 		if (graphics!=null) {
 			// update BufferedImage
-			updateImgBlock(position.isOccupied(), position.getCertainty(), graphics, position.getX(), position.getY(), 1);
+			updateImgBlock(position.isOccupied(), position.getCertainty(), (Graphics2D)img.getGraphics(), position.getX(), position.getY(), 1);
 			// update screen
 			this.repaint(position.getX()*PIX_WIDTH, (mapHeight - 1 - position.getY())*PIX_WIDTH, PIX_WIDTH, PIX_WIDTH);
 		}
@@ -139,6 +138,11 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		// height stored in state to allow correct orientation of y axis
 		mapHeight = map.getHeight();
 		graphics = (Graphics2D) img.getGraphics();
+		// initialise to new graphic (black background)
+		for (int i=0; i<map.getWidth(); i++)
+			for(int j=0; j<map.getHeight(); j++)
+				updatePosition(new Position(i,j,false,(short)0));
+		// add any known points in map
 		Iterator<Position> it = map.iterator();
 		while(it.hasNext()) {
 			Position p = it.next();

@@ -26,7 +26,7 @@ public enum CommandType {
 	/** Unlock the robot */
 	RUNLOCK(0x09,1),
 	/** Connects client to the server */
-	CONNECT(0x0A,2);
+	CONNECT(0x0B,2);
 	/** Unique ID of the commad */
 	final int id, size;
 	

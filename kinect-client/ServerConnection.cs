@@ -56,7 +56,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 socket.Connect(remoteEndPoint);
                 // create and send connected packet
                 byte[] connectedMsg = new byte[2];
-                connectedMsg[0] = (byte)0x0A;
+                connectedMsg[0] = (byte)0x0B;
                 connectedMsg[1] = (byte)0x02;     
                 SendPacket(connectedMsg);
                 Console.WriteLine("Connected to server!");

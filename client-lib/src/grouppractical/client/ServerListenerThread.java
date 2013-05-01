@@ -5,6 +5,8 @@ import grouppractical.client.commands.CommandParser;
 import grouppractical.client.commands.CommandType;
 import grouppractical.client.commands.MPositionCommand;
 import grouppractical.client.commands.RStatusCommand;
+import grouppractical.utils.map.HorizontalNode;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -71,27 +73,23 @@ public class ServerListenerThread extends Thread {
 					close();
 					return;
 				}
-				
 				while (!cmdparse.isOutputEmpty()) {
 					Command cmd = cmdparse.dequeue();
 					unpackCommand(cmd);
 				}
-		
 			}
 		}
 	}
 	
 	public void unpackCommand(Command cmd) {
 		// unpack to RobotListener and MapListener commands
-		CommandType cmdType = cmd.getCommandType();
-		switch (cmdType) {
+		switch (cmd.getCommandType()) {
 		
 		case MINITIALIZE:
 			for(int i = 0; i < listeners.getListeners(MapListener.class).length; i++) {
-				//listeners.getListeners(MapListener.class)[i].updateMap(map);
+				listeners.getListeners(MapListener.class)[i].updateMap(new HorizontalNode(0,300,0,300));
 			}
 			break;
-		
 		case MPOSITION:
 			MPositionCommand posCmd = (MPositionCommand) cmd;
 			for(int i = 0; i < listeners.getListeners(MapListener.class).length; i++) {
@@ -109,7 +107,5 @@ public class ServerListenerThread extends Thread {
 		default:
 			break;
 		}
-	
 	}
-	
 }

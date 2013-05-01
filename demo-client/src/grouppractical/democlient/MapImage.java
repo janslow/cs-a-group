@@ -60,10 +60,10 @@ public class MapImage extends JFrame {
 				else {
 					console.println("No image exists to save to PNG");
 				}
-				
 			}
 		});
-		mapPanel = new MapPanel(conn, 30);
+		int pix_width = 1;
+		mapPanel = new MapPanel(conn, pix_width);
 		
 		// Construct panel
 		pane.add(mapPanel, BorderLayout.CENTER);

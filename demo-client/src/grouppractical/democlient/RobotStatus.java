@@ -27,6 +27,7 @@ public class RobotStatus extends JFrame implements RobotListener {
 	private final JLabel batteryLevel;
 	private final JLabel robotXposition;
 	private final JLabel robotYposition;
+	private final JLabel robotAngle;
 
 	/**
 	 * Constructs a new RobotStatus JFrame given a ClientConnection
@@ -42,10 +43,13 @@ public class RobotStatus extends JFrame implements RobotListener {
 		batteryLevel = new JLabel("?%");
 		robotXposition = new JLabel("?x?");
 		robotYposition = new JLabel("?y?");
+		robotAngle = new JLabel("?a?");
 		JLabel headerLabel = new JLabel("Robot Status:");
 		JLabel xLabel = new JLabel("x co-ordinate:");
 		JLabel yLabel = new JLabel("y co-ordinate:");
+		JLabel aLabel = new JLabel("robot angle:");
 		JLabel batteryLabel = new JLabel("Battery level:");
+		
 		
 		// set fonts
 		Font fb = new Font(Font.MONOSPACED,Font.BOLD, baseFontSize);
@@ -53,21 +57,27 @@ public class RobotStatus extends JFrame implements RobotListener {
 		headerLabel.setFont(fb);
 		xLabel.setFont(fb);
 		yLabel.setFont(fb);
+		aLabel.setFont(fb);
 		batteryLabel.setFont(fb);
 		batteryLevel.setFont(f);
 		robotXposition.setFont(f);
 		robotYposition.setFont(f);
+		robotAngle.setFont(f);
+		
 		
 		// construct JPanel
-		pane = new JPanel(new GridLayout(4,2,10,10));
+		pane = new JPanel(new GridLayout(5,2,10,10));
 		pane.add(headerLabel);
 		pane.add(new JLabel());
 		pane.add(xLabel);
 		pane.add(robotXposition);
 		pane.add(yLabel);
 		pane.add(robotYposition);
+		pane.add(aLabel);
+		pane.add(robotAngle);
 		pane.add(batteryLabel);
 		pane.add(batteryLevel);
+		
 		
 		// add listener
 		conn.addRobotListener(this);
@@ -78,13 +88,15 @@ public class RobotStatus extends JFrame implements RobotListener {
 		this.setVisible(true);
 	}
 	
-	public void updatePosition(int x, int y) {
-		robotXposition.setText(String.valueOf(x));
-		robotYposition.setText(String.valueOf(y));
-	}
-
 	public void updateVoltage(double v) {
 		batteryLevel.setText(String.valueOf(v));
+	}
+
+	@Override
+	public void updatePosition(int x, int y, float angle) {
+		robotXposition.setText(String.valueOf(x));
+		robotYposition.setText(String.valueOf(y));
+		robotAngle.setText(String.valueOf(angle));
 	}
 
 }

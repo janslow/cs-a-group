@@ -52,6 +52,7 @@ public class CommandParser {
 	 */
 	public void enqueue(char c) throws InterruptedException {
 		semWriter.acquire();
+		
 		// Forces the char to be an 8-bit char
 		c = validateChar(c);
 		/* If there is not an array of chars which have already been read, 
@@ -101,6 +102,10 @@ public class CommandParser {
 				case CONNECT:
 					q.add(parseConnect(chars));
 					break;
+				}
+				if ("true".equals(System.getenv("debug"))) {
+					for (char x : chars) System.out.print(Integer.toHexString(x) + " ");
+					System.out.println();
 				}
 			}
 			chars = null;

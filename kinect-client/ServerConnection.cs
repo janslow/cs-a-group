@@ -31,6 +31,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         // Byte reading state
         private int i;
         private byte[] bytes;
+        private int cmdLength = 1;
 
         public ServerConnection(String address, String name, MainWindow kinectMapping)
         {
@@ -94,6 +95,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         public void run()
         {
             byte[] buffer = new byte[1];
+            bool skipByte = false;
             while (true)
             {
                 try
@@ -105,7 +107,26 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                     this.close();
                 }
                 Console.WriteLine("> IN: " + buffer[0]);
-                enqueue(buffer);
+                if (i == cmdLength && !skipByte)
+                {
+                    // Just finished read and buffer contains first byte to drop
+                    skipByte = true;
+                }
+                else
+                {
+                    if (skipByte)
+                    {
+                        // Finished read and buffer contains second byte to drop
+                        skipByte = false;
+                        i = 0;
+                    }
+                    else
+                    {
+                        // Forward byte to be parsed
+                        Console.WriteLine("> NQ: " + buffer[0]);
+                        enqueue(buffer);
+                    }
+                }
             }
         }
 
@@ -123,15 +144,20 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 switch (b)
                 {
                     case RSTATUS:
-                        bytes = new byte[8];
+                        cmdLength = 8;
+                        bytes = new byte[cmdLength];
                         bytes[0] = b;
                         i = 1;
                         break;
                     case RLOCK:
                         kinectMapping.updateReadyToMap(true);
+                        cmdLength = 1;
+                        i = 1;
                         break;
                     case RUNLOCK:
                         kinectMapping.updateReadyToMap(false);
+                        cmdLength = 1;
+                        i = 1;
                         break;
                     default:
                         Console.WriteLine("Invalid command read and ignored (" + b + ")"); return;
@@ -140,7 +166,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             else
             {
                 bytes[i++] = b;
-                if (i >= bytes.Length)
+                if (i >= cmdLength)
                 {
                     // Parse Status
                     Vector2D v = ParseRStatusCommandPosition(bytes);

@@ -3,8 +3,9 @@ package grouppractical.demotest;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
-import grouppractical.client.Map;
-import grouppractical.client.Position;
+import grouppractical.utils.map.Map;
+import grouppractical.utils.map.Position;
+
 
 /**
  * A simple implementation of a Map, using two two-dimensional arrays

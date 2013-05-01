@@ -19,6 +19,7 @@ public class ClientConnection {
 	private final Socket socket;
 	private final PrintWriter out;
 	private final EventListenerList listeners;
+	private final ServerListenerThread serverListener;
 	
 	/**
 	 * Constructs a new ClientConnection
@@ -31,15 +32,23 @@ public class ClientConnection {
 		socket = new Socket(host, MultiServerThread.PORT);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		listeners = new EventListenerList();
+		serverListener = new ServerListenerThread(listeners, socket, this);
+		serverListener.start();
 	}
 	
+	// throws??
 	/**
 	 * Closes the exception to the server
 	 * @throws IOException Thrown if there was an error closing the socket to the server
 	 */
-	public void close() throws IOException {
+	public void close() {
 		out.close();
-		socket.close();
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

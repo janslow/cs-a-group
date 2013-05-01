@@ -24,3 +24,15 @@ C:\Users\Joe Zammit\Desktop\kinect-client\obj\Debug\Microsoft.Samples.Kinect.Dep
 C:\Users\Joe Zammit\Desktop\kinect-client\obj\Debug\kinect-client.csproj.GenerateResource.Cache
 C:\Users\Joe Zammit\Desktop\Kinect\kinect-client\obj\Debug\DepthBasics-WPF.exe
 C:\Users\Joe Zammit\Desktop\Kinect\kinect-client\obj\Debug\DepthBasics-WPF.pdb
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\DepthBasics-WPF.exe
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\DepthBasics-WPF.pdb
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\kinect-client.csprojResolveAssemblyReference.cache
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\MainWindow.baml
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\MainWindow.g.cs
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\App.g.cs
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\DepthBasics-WPF_MarkupCompile.cache
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\DepthBasics-WPF.g.resources
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\Microsoft.Samples.Kinect.DepthBasics.Properties.Resources.resources
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\obj\Debug\kinect-client.csproj.GenerateResource.Cache
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\bin\Debug\DepthBasics-WPF.exe
+C:\Users\Joe Zammit\Documents\GitHub\cs-a-group\kinect-client\bin\Debug\DepthBasics-WPF.pdb

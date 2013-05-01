@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommandType.cs" />
     <Compile Include="ServerConnection.cs" />
     <Compile Include="Observation.cs" />
     <Compile Include="Vector2D.cs" />

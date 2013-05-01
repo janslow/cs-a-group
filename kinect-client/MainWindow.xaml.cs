@@ -28,7 +28,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         
         bool readyToRead = false;
         int framesRead = 0;
-        const int framesPerRead = 1;
+        const int framesPerRead = 2;
 
         /// <summary>
         /// Robot position
@@ -36,7 +36,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private Vector2D rbotPos;
 
         /// <summary>
-        /// Robot angle in radians
+        /// Robot angle in degrees
         /// </summary>
         private double rbotAngle;
 
@@ -71,7 +71,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             readPointsToCheck();
 
             // Setup server connection
-            server = new ServerConnection("192.168.52.50", "Remote Kinect Client");
+            server = new ServerConnection("localhost", "Remote Kinect Client", this);
             
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
@@ -114,6 +114,23 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             }
         }
 
+        public void updateReadyToMap(bool ready)
+        {
+            if (ready != readyToRead)
+            {
+                readyToRead = ready;
+                framesRead = 0;
+            }
+        }
+
+        public void updateRbotPosition(double x, double y, double rbotAngle)
+        {
+            Vector2D v = new Vector2D(x, y);
+            this.rbotPos = v;
+            this.rbotAngle = rbotAngle;
+            Console.WriteLine("Updated Position: " + x + ", " + y + "; " + rbotAngle);
+        }
+
         /// <summary>
         /// Execute shutdown tasks
         /// </summary>
@@ -138,11 +155,10 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         /// <param name="e">event arguments</param>
         private void SensorDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
-            readyToRead = true;     // temporary, needs to be set by the server when the robot stops
             using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
             {
-                // Add guard Back:  && framesRead < framesPerRead
-                if (readyToRead)
+             
+                if (readyToRead && framesRead < framesPerRead)
                 {
 
                     if (depthFrame != null)

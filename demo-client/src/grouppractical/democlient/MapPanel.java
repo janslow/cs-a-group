@@ -1,9 +1,10 @@
 package grouppractical.democlient;
 
 import grouppractical.client.ClientConnection;
-import grouppractical.client.Map;
+import grouppractical.utils.map.Map;
 import grouppractical.client.MapListener;
-import grouppractical.client.Position;
+import grouppractical.utils.map.Position;
+import grouppractical.client.RobotListener;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -22,7 +23,7 @@ import javax.swing.JPanel;
  * @author Joe Zammit
  *
  */
-public class MapPanel extends JPanel implements MapListener {
+public class MapPanel extends JPanel implements MapListener, RobotListener {
 
 	
 	/**
@@ -45,6 +46,14 @@ public class MapPanel extends JPanel implements MapListener {
 	 * The height of the map, required to allow correct orientation of the y-axis in Swing
 	 */
 	private int mapHeight = 0;
+	/**
+	 * The robot's x coordinate
+	 */
+	private int robotX = 0;
+	/**
+	 * The robot's y coordinate
+	 */
+	private int robotY = 0;
 	
 	
 	/**
@@ -145,5 +154,28 @@ public class MapPanel extends JPanel implements MapListener {
 			g.drawImage(img, 0, 0, PIX_WIDTH*img.getWidth(), PIX_WIDTH*img.getHeight(), null);
 		}
 	}
-	
+
+	@Override
+	public void updateVoltage(double v) {	
+	}
+
+	@Override
+	public void updatePosition(int x, int y, float angle) {
+		// if graphics null, update map hasn't been called yet, so wait for server to respond to MAP_LISTENER command. Otherwise update.
+		if (graphics!=null) {
+			// update buffered image
+			Color oldColour = graphics.getColor();
+			// set colour
+			graphics.setColor(Color.GREEN);
+			graphics.fillRect(x*PIX_WIDTH,(mapHeight - 1 - y)*PIX_WIDTH, PIX_WIDTH, PIX_WIDTH);
+			// reset colour
+			graphics.setColor(oldColour);
+			this.repaint(x*PIX_WIDTH, (mapHeight - 1 - y)*PIX_WIDTH, PIX_WIDTH, PIX_WIDTH);
+			this.repaint(robotX*PIX_WIDTH, (mapHeight - 1 - robotY)*PIX_WIDTH, PIX_WIDTH, PIX_WIDTH);
+			robotX = x;
+			robotY = y;
+		}	
+		
+	}
+
 }

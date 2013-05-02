@@ -4,6 +4,9 @@ import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
 import grouppractical.client.commands.ConnectCommand;
+import grouppractical.client.commands.MInitialiseCommand;
+import grouppractical.client.commands.MPositionCommand;
+import grouppractical.utils.map.Position;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,6 +124,7 @@ class ClientThread extends Thread implements CommandListener {
 					case RSTOP:
 					case RUNLOCK:
 						server.enqueueCommand(cmd);
+						break;
 					//RStatus should be ignored
 					case RSTATUS:
 						break;

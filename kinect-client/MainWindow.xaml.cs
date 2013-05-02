@@ -21,17 +21,20 @@ namespace Microsoft.Samples.Kinect.DepthBasics
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        ServerConnection server;
-
-        List<List<Tuple<int, int>>> pointsToCheck = new List<List<Tuple<int, int>>>();
-        
-        bool readyToRead = false;
-        int framesRead = 0;
-        const int framesPerRead = 2;
-
+        // Server
+        private ServerConnection server;
+        // Pre-generated list of lists: each list corresponds to the "line of sight" to check for each pixel
+        private List<List<Tuple<int, int>>> pointsToCheck = new List<List<Tuple<int, int>>>();
+        // Ready to read next set of observations
+        private bool readyToRead = false;
+        // Number of frames read this read
+        private int framesRead = 0;
+        // Number of sets of observations to push per read
+        private const int framesPerRead = 2;
+        // Number of millimeters to 1 global unit
+        private const int UNIT = 50;
         /// <summary>
-        /// Robot position
+        /// Robot position in millimeters
         /// </summary>
         private Vector2D rbotPos;
 
@@ -125,10 +128,12 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 
         public void updateRbotPosition(double x, double y, double rbotAngle)
         {
-            Vector2D v = new Vector2D(x, y);
+            Vector2D v = new Vector2D(x*UNIT, y*UNIT);
             this.rbotPos = v;
             this.rbotAngle = rbotAngle;
-            Console.WriteLine("Updated Position: " + x + ", " + y + "; " + rbotAngle);
+
+            Console.WriteLine();
+            Console.WriteLine("Robot Position/Angle updated @ " + System.DateTime.Now + " to (" + x + ", " + y + "; " + rbotAngle + ")");
         }
 
         /// <summary>
@@ -157,16 +162,11 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         {
             using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
             {
-             
-                if (readyToRead && framesRead < framesPerRead)
+                // Check lock, check rbot position is known, and check frame count
+                if (readyToRead && rbotPos!=null && framesRead < framesPerRead)
                 {
-
                     if (depthFrame != null)
                     {
-                        //TODO get robot position from the server (set to identities)
-                        rbotPos = new Vector2D(0, 0);
-                        rbotAngle = 90;
-
                         // Copy the pixel data from the image to a temporary array
                         depthFrame.CopyDepthImagePixelDataTo(this.depthPixels);
 
@@ -218,9 +218,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                         // Collate list of observations to send, transformed to global coordinates
                         List<Observation> observations = new List<Observation>();
                         foreach (Vector2D v in freeVectors)
-                            observations.Add(Observation.vectorToObservation(v, false, rbotPos, rbotAngle, 50, 127));
+                            observations.Add(Observation.vectorToObservation(v, false, rbotPos, rbotAngle, UNIT, 127));
                         foreach (Vector2D v in occupiedVectors)
-                            observations.Add(Observation.vectorToObservation(v, true, rbotPos, rbotAngle, 50, 127));
+                            observations.Add(Observation.vectorToObservation(v, true, rbotPos, rbotAngle, UNIT, 127));
                         Console.WriteLine();
                         Console.WriteLine("Observation set is generated @ " + System.DateTime.Now);
 
@@ -228,8 +228,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                         foreach (Observation o in observations)                     
                             server.SendPacket(o.serialize());
                         Console.WriteLine("Observation set packets sent @ " + System.DateTime.Now);
+                        framesRead++;
                     }
-                    framesRead++;
+                    
                 }
             }
         }

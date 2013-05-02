@@ -11,6 +11,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 {
     class ServerConnection
     {
+        // Debug Network?
+        private const bool debugNetwork = false;
+
         // Command ids
         private const byte RSTATUS = (byte)0x06;
         private const byte RLOCK = (byte)0x08;
@@ -107,7 +110,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 {
                     this.close();
                 }
-                Console.WriteLine("> IN: " + buffer[0]);
+                if (debugNetwork)
+                    Console.WriteLine("> IN: " + buffer[0]);
                 if (i == cmdLength && !skipByte)
                 {
                     // Just finished read and buffer contains first byte to drop
@@ -124,7 +128,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                     else
                     {
                         // Forward byte to be parsed
-                        Console.WriteLine("> NQ: " + buffer[0]);
+                        if (debugNetwork)
+                            Console.WriteLine("> NQ: " + buffer[0]);
                         enqueue(buffer);
                     }
                 }

@@ -1,13 +1,16 @@
 package grouppractical.server;
 
+import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
+import grouppractical.client.commands.ConnectCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 /**
  * Thread which is bound to a connection to a client, which parses input from the client and sends it to
@@ -15,18 +18,20 @@ import java.net.Socket;
  * @author janslow
  *
  */
-class ClientThread extends Thread {
+class ClientThread extends Thread implements CommandListener {
 	/** Parent server */
 	private final MultiServerThread server;
 	/** Socket connection to client */
 	private final Socket socket;
 	/** Client ID */
 	private final int id;
+	private final Semaphore writeSem;
 	
 	private PrintWriter pw;
 	private BufferedReader br;
 	/** Is the thread running or has it been closed */
 	private boolean running;
+	private ClientType clientType;
 	
 	/**
 	 * Constructs a new thread to communicate with client
@@ -40,6 +45,8 @@ class ClientThread extends Thread {
 		this.server = server;
 		this.socket = socket;
 		this.id = id;
+		this.clientType = ClientType.REMOTE;
+		this.writeSem = new Semaphore(1);
 	}
 	
 	/**
@@ -71,6 +78,7 @@ class ClientThread extends Thread {
 	 * to the main server thread
 	 */
 	public void run() {
+		running = true;
 		try {
 			pw = new PrintWriter(socket.getOutputStream(), true);
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -78,13 +86,13 @@ class ClientThread extends Thread {
 			close();
 		}
 		
-		boolean loop = true;
 		CommandParser cmdparse = new CommandParser();
-		while (loop) {
+		while (running) {
 			boolean word = false;
 			while (!word) {
 				try {
-					cmdparse.enqueue((char)br.read());
+					char c = (char) br.read();
+					cmdparse.enqueue(c);
 				} catch (IOException e) {
 					System.err.println(e.toString());
 					close();
@@ -96,8 +104,27 @@ class ClientThread extends Thread {
 				
 				while (!cmdparse.isOutputEmpty()) {
 					Command cmd = cmdparse.dequeue();
-					ServerCommandRequest cmdreq = new ServerCommandRequest(id, cmd);
-					server.enqueueRequest(cmdreq);
+					switch (cmd.getCommandType()) {
+					//Connect should update the client type
+					case CONNECT:
+						clientType = ((ConnectCommand)cmd).getClientType();
+						break;
+					//MInitialize should cause the ClientThread to send the entire map
+					case MINITIALISE:
+						//TODO Send all positions to client
+						break;
+					//The following commands should be passed to the main thread
+					case MPOSITION:
+					case RDISTANCE:
+					case RLOCK:
+					case RROTATE:
+					case RSTOP:
+					case RUNLOCK:
+						server.enqueueCommand(cmd);
+					//RStatus should be ignored
+					case RSTATUS:
+						break;
+					}
 				}
 			}
 		}
@@ -109,5 +136,42 @@ class ClientThread extends Thread {
 	 */
 	public boolean isRunning() {
 		return running;
+	}
+
+	@Override
+	public void enqueueCommand(Command cmd) {
+		switch (clientType) {
+		//Kinect client listens to RStatus and RLock commands
+		case KINECT:
+			switch (cmd.getCommandType()) {
+			case RSTATUS:
+			case RLOCK:
+				sendCommand(cmd);
+				break;
+			}
+			break;
+		//Mapper clients listen to MPosition, RStatus, RLock, RUnlock
+		case MAPPER:
+			switch (cmd.getCommandType()) {
+			case MPOSITION:
+			case RSTATUS:
+			case RLOCK:
+			case RUNLOCK:
+				sendCommand(cmd);
+				break;
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * Sends a command to the client
+	 * @param cmd Command to transmit
+	 */
+	private void sendCommand(Command cmd) {
+		writeSem.acquireUninterruptibly();
+		if (cmd != null)
+			pw.println(cmd.serialize());
+		writeSem.release();
 	}
 }

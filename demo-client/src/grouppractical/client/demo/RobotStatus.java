@@ -1,7 +1,7 @@
-package grouppractical.democlient;
+package grouppractical.client.demo;
 
-import grouppractical.client.ClientConnection;
 import grouppractical.client.RobotListener;
+import grouppractical.utils.map.Position;
 
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -34,7 +34,7 @@ public class RobotStatus extends JFrame implements RobotListener {
 	 * @param baseFontSize the largest size of font (pt) to be used in the window
 	 * @param conn the ClientConnection from which to receive updates from the Robot
 	 */
-	public RobotStatus(int baseFontSize, ClientConnection conn) {
+	public RobotStatus(int baseFontSize) {
 		// construct JFrame
 		super("Robot Status");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -78,25 +78,29 @@ public class RobotStatus extends JFrame implements RobotListener {
 		pane.add(batteryLabel);
 		pane.add(batteryLevel);
 		
-		
-		// add listener
-		conn.addRobotListener(this);
-		
 		// construct, pack, and display JFrame
 		this.add(pane);
 		this.pack();
 		this.setVisible(true);
 	}
 	
-	public void updateVoltage(double v) {
-		batteryLevel.setText(String.valueOf(v));
+	@Override
+	public void updateRobotPosition(Position position) {
+		robotXposition.setText(Integer.toString(position.getX()));
+		robotYposition.setText(Integer.toString(position.getY()));
 	}
 
 	@Override
-	public void updatePosition(int x, int y, float angle) {
-		robotXposition.setText(String.valueOf(x));
-		robotYposition.setText(String.valueOf(y));
-		robotAngle.setText(String.valueOf(angle));
+	public void updateAngle(double degrees, double radians) {
+		robotAngle.setText(Double.toString(degrees) + "¡");
 	}
+
+	@Override
+	public void updateVoltage(float voltage) {
+		batteryLevel.setText(Float.toString(voltage));
+	}
+
+	@Override
+	public void updateLocked(boolean locked) { }
 
 }

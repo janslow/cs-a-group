@@ -96,7 +96,7 @@ public class CommandParser {
 				case MPOSITION:
 					q.add(parseMPosition(chars));
 					break;
-				case MINITIALIZE:
+				case MINITIALISE:
 					q.add(new MInitialiseCommand());
 					break;
 				case CONNECT:

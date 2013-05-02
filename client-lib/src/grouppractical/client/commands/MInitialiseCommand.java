@@ -10,7 +10,7 @@ package grouppractical.client.commands;
 public class MInitialiseCommand implements Command {
 	@Override
 	public CommandType getCommandType() {
-		return CommandType.MINITIALIZE;
+		return CommandType.MINITIALISE;
 	}
 
 	@Override

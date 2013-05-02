@@ -58,7 +58,9 @@ public class Console extends JFrame {
 	 * @param s String to print
 	 */
 	public void println(String s) {
-		print(s + "\n");
+		text.append(s);
+		text.append("\n");
+		text.setCaretPosition(text.getDocument().getLength());
 	}
 	
 	/**

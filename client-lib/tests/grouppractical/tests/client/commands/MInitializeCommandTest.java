@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public class MInitializeCommandTest extends CommandTest {
 	public MInitializeCommandTest() {
-		super(new MInitialiseCommand(), CommandType.MINITIALIZE, "MINITIALIZE()",true);
+		super(new MInitialiseCommand(), CommandType.MINITIALISE, "MINITIALIZE()",true);
 	}
 	
 	@Test

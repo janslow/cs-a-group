@@ -20,7 +20,7 @@ public enum CommandType {
 	/** Updates the status of the robot */
 	RSTATUS(0x06,8),
 	/** Initializes a map */
-	MINITIALIZE(0x07,1),
+	MINITIALISE(0x07,1),
 	/** Locks the robot */
 	RLOCK(0x08,1),
 	/** Unlock the robot */

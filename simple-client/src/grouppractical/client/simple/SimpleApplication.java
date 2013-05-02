@@ -1,10 +1,14 @@
-package grouppractical.remote.simple;
+package grouppractical.client.simple;
 
-import grouppractical.client.ClientConnection;
+import grouppractical.client.ClientConnectionThread;
+import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.RDistanceCommand;
+import grouppractical.client.commands.RLockCommand;
 import grouppractical.client.commands.RRotateCommand;
 import grouppractical.client.commands.RStopCommand;
+import grouppractical.client.commands.RUnlockCommand;
+import grouppractical.server.CommandListener;
 import grouppractical.utils.Console;
 
 import java.awt.event.KeyEvent;
@@ -12,32 +16,42 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public class Application implements KeyListener {
+/**
+ * Simple Client Application, which allows sending of commands to the server
+ * 
+ * @author jay
+ *
+ */
+public class SimpleApplication implements KeyListener, CommandListener {
 	public static void main(String[] args) {
 		String host = args.length > 0 ? args[0] : "127.0.0.1";
-		new Application(host,"Remote Java Client");
+		new SimpleApplication(host,"Simple Client");
 	}
 	
-	private final Console console;
-	private final ClientConnection conn;
+	protected final Console console;
+	protected final ClientConnectionThread conn;
 	
+	public SimpleApplication(String host, String name) {
+		this(host,name,ClientType.REMOTE);
+	}
 	/**
 	 * Constructs new client application
 	 * @param host Host name of server
 	 * @param name Friendly name of this client
+	 * @param clientType Type of client
 	 */
-	public Application(String host, String name) {
-		//Constructs new output window
-		console = new Console("Simple Client Console");
+	protected SimpleApplication(String host, String name, ClientType clientType) {
+		//Constructs new log window
+		console = new Console(name + " Console");
 		console.pack();
 		console.setVisible(true);
 		console.addKeyListener(this);
-		console.println("Client Console Created");
+		console.println(name + " Console Created");
 		
 		//Attempts to connect to server
-		ClientConnection conn = null;
+		ClientConnectionThread conn = null;
 		try {
-			conn = new ClientConnection(host, name);
+			conn = new ClientConnectionThread(host,clientType);
 		} catch (UnknownHostException e) {
 			System.err.println(e.toString());
 			console.println("Error - Unknown Hostname");
@@ -47,15 +61,13 @@ public class Application implements KeyListener {
 		}
 		this.conn = conn;
 		
+		conn.start();
 	}
 	
-	/**
-	 * Sends command to server and prints it to output
-	 * @param cmd Command to send
-	 */
-	public void sendCommand(Command cmd) {
+	@Override
+	public void enqueueCommand(Command cmd) {
 		if (conn != null) {
-			conn.sendCommand(cmd);
+			conn.enqueueCommand(cmd);
 			console.println("Command Sent: " + cmd.toString());
 		}
 	}
@@ -75,19 +87,25 @@ public class Application implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
-			sendCommand(new RDistanceCommand((short) 5));
+			enqueueCommand(new RDistanceCommand((short) 5));
 			break;
 		case KeyEvent.VK_DOWN:
-			sendCommand(new RDistanceCommand((short) -5));
+			enqueueCommand(new RDistanceCommand((short) -5));
 			break;
 		case KeyEvent.VK_LEFT:
-			sendCommand(RRotateCommand.constructFromDegrees(-30));
+			enqueueCommand(RRotateCommand.constructFromDegrees(-30.0));
 			break;
 		case KeyEvent.VK_RIGHT:
-			sendCommand(RRotateCommand.constructFromDegrees(-30));
+			enqueueCommand(RRotateCommand.constructFromDegrees(30.0));
 			break;
 		case KeyEvent.VK_ESCAPE:
-			sendCommand(new RStopCommand());
+			enqueueCommand(new RStopCommand());
+			break;
+		case KeyEvent.VK_L:
+			enqueueCommand(new RLockCommand());
+			break;
+		case KeyEvent.VK_U:
+			enqueueCommand(new RUnlockCommand());
 			break;
 		}
 	}

@@ -38,6 +38,28 @@ public class RStatusCommand implements Command {
 		this.voltage = voltage; 
 		this.angle = angle;
 	}
+	/**
+	 * Creates a new Status Command, using an angle in radians
+	 * @param position Position of the robot
+	 * @param voltage Battery Level of robot in volts
+	 * @param angle Angle the robot is facing, in radians
+	 * @return New RStatus Command
+	 */
+	public static RStatusCommand constructFromRadians(Position position, float voltage, double angle) {
+		short s = (short) convert(angle,MIN_RADIANS,MAX_RADIANS,MIN_INT,MAX_INT);
+		return new RStatusCommand(position, voltage, s);
+	}
+	/**
+	 * Creates a new Status Command, using an angle in degrees
+	 * @param position Position of the robot
+	 * @param voltage Battery Level of robot in volts
+	 * @param angle Angle the robot is facing, in degrees
+	 * @return New RStatus Command
+	 */
+	public static RStatusCommand constructFromDegrees(Position position, float voltage, double angle) {
+		short s = (short) convert(angle,MIN_DEGREES,MAX_DEGREES,MIN_INT,MAX_INT);
+		return new RStatusCommand(position, voltage, s);
+	}
 	
 	@Override
 	public CommandType getCommandType() {

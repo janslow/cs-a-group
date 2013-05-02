@@ -10,8 +10,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
@@ -53,6 +56,10 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	 * The robot's y coordinate
 	 */
 	private int robotY = 0;
+	/**
+	 * Number of update, as pushed to file system copies of map
+	 */
+	private int updateNo = 0;
 
 	/**
 	 * Constructor for a MapPanel JPanel
@@ -157,12 +164,12 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		// initialise to new graphic (black background)
 		for (int i = 0; i < map.getWidth(); i++)
 			for (int j = 0; j < map.getHeight(); j++)
-				updateRobotPosition(new Position(i, j, false, (short) 0));
+				updateMapPosition(new Position(i, j, false, (short) 0));
 		// add any known points in map
 		Iterator<Position> it = map.iterator();
 		while (it.hasNext()) {
 			Position p = it.next();
-			updateRobotPosition(p);
+			updateMapPosition(p);
 		}
 		// repaint entire panel in case dimensions have changed
 		this.repaint();
@@ -207,8 +214,29 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	public void updateVoltage(float voltage) {
 	}
 
+	public boolean writeImgToFile(File f) {
+		if (img==null) {
+			return false;
+		}
+		else {
+			try {
+				ImageIO.write(img, "png", f);
+				return true;
+			}
+			catch(IOException e0) {
+				System.out.println("Error writing image of map @ update " + updateNo);
+				System.out.println("Error message: "+ e0.getMessage());
+				return false;
+			}
+		}
+	}
+	
 	@Override
 	public void updateLocked(boolean locked) {
+		if (locked == false) {
+			updateNo ++;
+			writeImgToFile(new File("map-imgs\\map"+updateNo+".png"));
+		}
 	}
 
 }

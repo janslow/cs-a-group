@@ -25,7 +25,7 @@ public class RobotController implements CommandListener {
 	public RobotController() {
 		this.listeners = new EventListenerList();
 		this.sem = new Semaphore(1);
-		this.pos = new Vector2D(0, 0);
+		this.pos = new Vector2D(500, 500);
 		this.angle = 0.0;
 	}
 	
@@ -71,8 +71,6 @@ public class RobotController implements CommandListener {
 			break;
 		case RUNLOCK:
 			locked = false;
-			break;
-		case RSTOP:
 			break;
 		default:
 			break;

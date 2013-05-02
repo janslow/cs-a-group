@@ -1,6 +1,6 @@
-package grouppractical.democlient;
+package grouppractical.client.demo;
 
-import grouppractical.client.ClientConnection;
+import grouppractical.client.ClientConnectionThread;
 import grouppractical.utils.Console;
 
 import java.awt.BorderLayout;
@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,7 +37,7 @@ public class MapImage extends JFrame {
 	 * @param conn the ClientConnection from which the map data will be received
 	 * @param console a Console to which the class may output messages
 	 */
-	public MapImage(final File outputFile, final ClientConnection conn, final Console console) {
+	public MapImage(final File outputFile, final ClientConnectionThread conn, final Console console) {
 		// construct JFrame
 		super("Map");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -63,7 +64,9 @@ public class MapImage extends JFrame {
 			}
 		});
 		int pix_width = 1;
-		mapPanel = new MapPanel(conn, pix_width);
+		mapPanel = new MapPanel(pix_width);
+		conn.addMapListener(mapPanel);
+		conn.addRobotListener(mapPanel);
 		
 		// Construct panel
 		pane.add(mapPanel, BorderLayout.CENTER);

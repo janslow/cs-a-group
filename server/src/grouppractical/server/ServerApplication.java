@@ -1,25 +1,25 @@
 package grouppractical.server;
 
-import grouppractical.server.MultiServerThread;
-import grouppractical.server.ServerCommandRequest;
-import grouppractical.utils.Console;
+import grouppractical.client.commands.CommandConsole;
+import grouppractical.robot.RobotController;
 
 import java.io.IOException;
 
-public class Application {
+public class ServerApplication {
 	public static void main(String[] args) {
-		new Application();
+		new ServerApplication();
 	}
 	
-	protected final Console con;
+	protected final CommandConsole con;
 	protected final MultiServerThread server;
+	protected final RobotController rbotController;
 	
 	/**
 	 * Constructs the server 
 	 */
-	public Application() {
+	public ServerApplication() {
 		//Constructs the output window
-		con = new Console("Test Server");
+		con = new CommandConsole("Test Server");
 		con.println("Output Window Running");
 		
 		//Attempts to start the server
@@ -32,6 +32,7 @@ public class Application {
 			con.println("Error - I/O Exception whilst opening server port");
 		}
 		this.server = server;
+		this.rbotController = new RobotController();
 		
 		//Runs the server task
 		run();
@@ -41,28 +42,13 @@ public class Application {
 	 * Whilst the server is still listening, calls the 'sendCommand' method with any received requests
 	 */
 	private void run() {
-		if (server != null) { 
+		if (server != null) {
+			server.addCommandListener(con);
+			server.addCommandListener(rbotController);
+			rbotController.addCommandListener(server);
+			
 			server.start();
 			con.println("Server Port Running on " + server.getHost() + ":" + MultiServerThread.PORT);
-			
-			while (server.isListening())
-				try {
-					sendCommand(server.dequeueBlock());
-				} catch (InterruptedException e) {
-					System.err.println(e.toString());
-					con.println("Server was interrupted");
-					server.close();
-				}
 		}
-		con.println("Server Closed");
-	}
-	
-	/**
-	 * Prints request to output
-	 * @param cmdreq Request to process
-	 */
-	public void sendCommand(ServerCommandRequest cmdreq) {
-		if (cmdreq != null)
-			con.println(cmdreq.toString());
 	}
 }

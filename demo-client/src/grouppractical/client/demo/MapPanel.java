@@ -56,6 +56,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 
 	/**
 	 * Constructor for a MapPanel JPanel
+	 * 
 	 * @param unitWidth
 	 *            the desired width (in pixels) of a single block on the map, as
 	 *            displayed on screen
@@ -199,12 +200,15 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	}
 
 	@Override
-	public void updateAngle(double degrees, double radians) { }
+	public void updateAngle(double degrees, double radians) {
+	}
 
 	@Override
-	public void updateVoltage(float voltage) { }
+	public void updateVoltage(float voltage) {
+	}
 
 	@Override
-	public void updateLocked(boolean locked) { }
+	public void updateLocked(boolean locked) {
+	}
 
 }

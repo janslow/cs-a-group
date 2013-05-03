@@ -1,6 +1,7 @@
 package grouppractical.client.demo;
 
 import grouppractical.client.ClientConnectionThread;
+import grouppractical.client.commands.MInitialiseCommand;
 import grouppractical.utils.Console;
 
 import java.awt.BorderLayout;
@@ -45,7 +46,7 @@ public class MapImage extends JFrame {
 		mapPanel = new MapPanel(pix_width);
 		conn.addMapListener(mapPanel);
 		conn.addRobotListener(mapPanel);
-		
+		conn.enqueueCommand(new MInitialiseCommand());
 		JButton saveImage = new JButton("Save to PNG");
 		saveImage.setPreferredSize(new Dimension(200,15));
 		saveImage.addActionListener(new ActionListener() {

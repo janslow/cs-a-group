@@ -195,12 +195,12 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 			graphics.setColor(Color.GREEN);
 			graphics.fillRect(x * PIX_WIDTH, (mapHeight - 1 - y) * PIX_WIDTH,
 					PIX_WIDTH, PIX_WIDTH);
+			// clear current robot position
+			updateMapPosition(new Position(robotX,robotY,false,(short)127));
 			// reset colour
 			graphics.setColor(oldColour);
 			this.repaint(x * PIX_WIDTH, (mapHeight - 1 - y) * PIX_WIDTH,
 					PIX_WIDTH, PIX_WIDTH);
-			this.repaint(robotX * PIX_WIDTH, (mapHeight - 1 - robotY)
-					* PIX_WIDTH, PIX_WIDTH, PIX_WIDTH);
 			robotX = x;
 			robotY = y;
 		}

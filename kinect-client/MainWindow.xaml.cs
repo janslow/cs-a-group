@@ -130,13 +130,13 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 
         public void updateReadyToMap(bool ready)
         {
-            if (ready != readyToRead)
+            readyToRead = ready;
+            if (ready)
             {
-                readyToRead = ready;
+                imageGenerator.writeImageToFile();
                 framesRead = 0;
             }
-            if (ready)
-                imageGenerator.writeImageToFile();
+
         }
 
         public void updateRbotPosition(double x, double y, double rbotAngle)

@@ -21,6 +21,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string HOST = "192.168.52.50";
         // Server
         private ServerConnection server;
         // Pre-generated list of lists: each list corresponds to the "line of sight" to check for each pixel
@@ -76,7 +77,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             readPointsToCheck();
 
             // Setup server connection
-            server = new ServerConnection("localhost", "Remote Kinect Client", this);
+            server = new ServerConnection(HOST, "Remote Kinect Client", this);
             
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.

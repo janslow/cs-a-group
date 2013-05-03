@@ -17,6 +17,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private byte[] imageData;
         private WriteableBitmap bitmap;
         private int writeNo = 0;
+        private int width;
+        private int height;
    
         public VisualLightWriter(String imageDirectory, String fileSeriesName, int width, int height, int dataLength)
         {
@@ -24,7 +26,10 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             this.fileSeriesName = fileSeriesName;
             bitmap = new WriteableBitmap(width, height, 96.0, 96.0, PixelFormats.Bgr32, null);
             imageData = new byte[dataLength];
+            this.width = width;
+            this.height = height;
         }
+
 
         public void copyImageFrame(ColorImageFrame f)
         {
@@ -34,6 +39,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         public void writeImageToFile()
         {
             writeNo++;
+            bitmap = new WriteableBitmap(width, height, 96.0, 96.0, PixelFormats.Bgr32, null);
             bitmap.WritePixels(
                         new Int32Rect(0, 0, this.bitmap.PixelWidth, this.bitmap.PixelHeight),
                         this.imageData,
@@ -53,6 +59,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     encoder.Save(fs);
+                    Console.WriteLine();
+                    Console.WriteLine("Kinect image " + writeNo + " saved to disk @ " + System.DateTime.Now);
                 }
             }
             catch (IOException)

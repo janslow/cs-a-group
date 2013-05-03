@@ -165,22 +165,14 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 server.close();
             }
         }
-        bool done = false;
+
         private void SensorColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
         {
             using (ColorImageFrame frame = e.OpenColorImageFrame())
             {
                 if (frame != null)
-                {
                     imageGenerator.copyImageFrame(frame);
-                    if (!done)
-                    {
-                        done = true;
-                        imageGenerator.writeImageToFile();
-                    }
-                }
             }
-
         }
 
         /// <summary>

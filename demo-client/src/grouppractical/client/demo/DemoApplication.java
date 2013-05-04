@@ -25,8 +25,6 @@ public class DemoApplication extends SimpleApplication {
 		//Creates new robot status window and map window
 		this.robotStatus = new RobotStatus(25);
 		conn.addRobotListener(robotStatus);
-		
 		this.mapImage = new MapImage(new File("mapout.png"), conn, console);
-		
 	}
 }

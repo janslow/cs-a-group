@@ -21,6 +21,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string HOST = "192.168.52.50";
         // Server
         private ServerConnection server;
         // Pre-generated list of lists: each list corresponds to the "line of sight" to check for each pixel
@@ -52,7 +53,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         /// Intermediate storage for the depth data received from the camera
         /// </summary>
         private DepthImagePixel[] depthPixels;
-        
+
+        private VisualLightWriter imageGenerator;
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -74,7 +77,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             readPointsToCheck();
 
             // Setup server connection
-            server = new ServerConnection("localhost", "Remote Kinect Client", this);
+            server = new ServerConnection(HOST, "Remote Kinect Client", this);
             
             // Look through all sensors and start the first connected one.
             // This requires that a Kinect is connected at the time of app startup.
@@ -93,12 +96,21 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             {
                 // Turn on the depth stream to receive depth frames
                 this.sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+                // Turn on the color stream to receive color frames
+                this.sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
                 
                 // Allocate space to put the depth pixels we'll receive
                 this.depthPixels = new DepthImagePixel[this.sensor.DepthStream.FramePixelDataLength];
 
+                // Initialise VisualLightWriter imageGenerator
+                imageGenerator = new VisualLightWriter("kinectImgs", "img", sensor.ColorStream.FrameWidth, sensor.ColorStream.FrameHeight, sensor.ColorStream.FramePixelDataLength);
+
                 // Add an event handler to be called whenever there is new depth frame data
                 this.sensor.DepthFrameReady += this.SensorDepthFrameReady;
+
+                // Add an event handler to be called whenever there is new visual light frame data
+                this.sensor.ColorFrameReady += this.SensorColorFrameReady;
 
                 // Start the sensor!
                 try
@@ -119,11 +131,12 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 
         public void updateReadyToMap(bool ready)
         {
-            if (ready != readyToRead)
+            if (ready)
             {
-                readyToRead = ready;
+                imageGenerator.writeImageToFile();
                 framesRead = 0;
             }
+            readyToRead = ready;
         }
 
         public void updateRbotPosition(double x, double y, double rbotAngle)
@@ -150,6 +163,15 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             if (server.isConnected())
             {
                 server.close();
+            }
+        }
+
+        private void SensorColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            using (ColorImageFrame frame = e.OpenColorImageFrame())
+            {
+                if (frame != null)
+                    imageGenerator.copyImageFrame(frame);
             }
         }
 

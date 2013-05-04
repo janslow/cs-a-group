@@ -4,6 +4,7 @@ import grouppractical.client.commands.ClientType;
 import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
 import grouppractical.client.commands.ConnectCommand;
+import grouppractical.client.commands.MInitialiseCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,8 +111,9 @@ class ClientThread extends Thread implements CommandListener {
 						clientType = ((ConnectCommand)cmd).getClientType();
 						break;
 					//MInitialize should cause the ClientThread to send the entire map
+					//For now, sends MInitialiseCommand back, which is interpreted as map all black
 					case MINITIALISE:
-						//TODO Send all positions to client
+						sendCommand(new MInitialiseCommand());
 						break;
 					//The following commands should be passed to the main thread
 					case MPOSITION:
@@ -121,6 +123,7 @@ class ClientThread extends Thread implements CommandListener {
 					case RSTOP:
 					case RUNLOCK:
 						server.enqueueCommand(cmd);
+						break;
 					//RStatus should be ignored
 					case RSTATUS:
 						break;

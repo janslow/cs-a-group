@@ -74,9 +74,11 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 					case MINITIALISE:
 						for (MapListener l : listeners.getListeners(MapListener.class))
 							l.updateMap(new HorizontalNode(0,1000,0,1000));
+						break;
 					case MPOSITION:
 						for (MapListener l : listeners.getListeners(MapListener.class))
 							l.updateMapPosition(((MPositionCommand)cmd).getPosition());
+						break;
 					case RSTATUS:
 						for (RobotListener l : listeners.getListeners(RobotListener.class)) {
 							RStatusCommand rcmd = (RStatusCommand)cmd;
@@ -84,10 +86,12 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 							l.updateRobotPosition(rcmd.getPosition());
 							l.updateVoltage(rcmd.getVoltage());
 						}
+						break;
 					case RLOCK:
 					case RUNLOCK:
 						for (RobotListener l : listeners.getListeners(RobotListener.class))
 							l.updateLocked(cmd.getCommandType() == CommandType.RLOCK);
+						break;
 					}
 				}
 			}

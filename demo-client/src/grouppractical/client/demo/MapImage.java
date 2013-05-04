@@ -1,6 +1,7 @@
 package grouppractical.client.demo;
 
 import grouppractical.client.ClientConnectionThread;
+import grouppractical.client.commands.MInitialiseCommand;
 import grouppractical.utils.Console;
 
 import java.awt.BorderLayout;
@@ -9,9 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,34 +42,29 @@ public class MapImage extends JFrame {
 		
 		// Create save button and configure MapPane
 		JPanel pane = new JPanel(new BorderLayout());
-		
+		int pix_width = 1;
+		mapPanel = new MapPanel(pix_width);
+		conn.addMapListener(mapPanel);
+		conn.addRobotListener(mapPanel);
+		conn.enqueueCommand(new MInitialiseCommand());
 		JButton saveImage = new JButton("Save to PNG");
 		saveImage.setPreferredSize(new Dimension(200,15));
 		saveImage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BufferedImage img = mapPanel.getMapImage();
 				if (img != null) {
-					try {
-						ImageIO.write(img, "png", outputFile);
-					}
-					catch(IOException e0) {
-						console.println("Error writing new PNG image");
-					}
+					if (!mapPanel.writeImgToFile(outputFile))
+						console.println("Error writing image to PNG");
 				}
 				else {
 					console.println("No image exists to save to PNG");
 				}
 			}
 		});
-		int pix_width = 1;
-		mapPanel = new MapPanel(pix_width);
-		conn.addMapListener(mapPanel);
-		conn.addRobotListener(mapPanel);
 		
 		// Construct panel
 		pane.add(mapPanel, BorderLayout.CENTER);
 		pane.add(saveImage, BorderLayout.PAGE_END);
-		
 		
 		// pack and make visible
 		setContentPane(pane);

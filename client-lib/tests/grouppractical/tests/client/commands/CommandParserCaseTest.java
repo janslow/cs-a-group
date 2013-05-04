@@ -48,6 +48,7 @@ public class CommandParserCaseTest {
 		};
 		Object[][][] xss = new Object[][][] {
 				data,
+				mPositionSecondData(),
 				//Test MPOSITION(position) command
 				mPositionCommandData(),
 				//Test RSTATUS(position,voltage) command
@@ -65,6 +66,17 @@ public class CommandParserCaseTest {
 				ys[i++] = x;
 		
 		return Arrays.asList(ys);
+	}
+	
+	protected static Object[][] mPositionSecondData() {
+		Object[][] data = new Object[1000][2];
+		for (int i = 0; i < 1000; i++) {
+			Position p = new Position(i,i,true,(short) 50);
+			MPositionCommand cmd = new MPositionCommand(p);
+			data[i][0] = cmd.toString();
+			data[i][1] = cmd;
+		}
+		return data;
 	}
 	
 	protected static Object[][] mPositionCommandData() {

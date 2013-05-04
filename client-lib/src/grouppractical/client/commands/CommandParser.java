@@ -45,6 +45,11 @@ public class CommandParser {
 		for (int i = 0; i < cs.length; i++)
 			enqueue(cs[i]);
 	}
+	
+	public void enqueue(byte b) throws InterruptedException {
+		int i = (b + 127) % 256;
+		enqueue((char)i);
+	}
 	/**
 	 * Adds an extra char to the buffer to be processed
 	 * @param c Character to add

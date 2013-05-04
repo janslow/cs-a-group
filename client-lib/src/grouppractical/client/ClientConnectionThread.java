@@ -11,10 +11,9 @@ import grouppractical.server.CommandListener;
 import grouppractical.server.MultiServerThread;
 import grouppractical.utils.map.HorizontalNode;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -22,8 +21,8 @@ import javax.swing.event.EventListenerList;
 
 public class ClientConnectionThread extends Thread implements CommandListener {
 	private final Socket socket;
-	private final PrintWriter out;
-	private final BufferedReader in;
+	private final OutputStream out;
+	private final InputStream in;
 	private final EventListenerList listeners;
 	
 	/**
@@ -35,8 +34,8 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 	public ClientConnectionThread(String host, ClientType clientType) throws UnknownHostException, IOException {
 		super("ClientConnectionThread");
 		this.socket = new Socket(host, MultiServerThread.PORT);
-		this.out = new PrintWriter(socket.getOutputStream(), true);
-		this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		this.out = socket.getOutputStream();
+		this.in = socket.getInputStream();
 		this.listeners = new EventListenerList();
 		enqueueCommand(new ConnectCommand(clientType));
 	}
@@ -44,7 +43,9 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 	 * Closes the exception to the server
 	 */
 	public void close() {
-		out.close();
+		try {
+			out.close();
+		} catch (IOException e) { }
 		try {
 			in.close();
 		} catch (IOException e) { }
@@ -58,7 +59,10 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 			boolean word = false;
 			while (!word) {
 				try {
-					cmdparse.enqueue((char)in.read());
+					while(loop && in.available() <= 0);
+					if (!loop) return;
+					byte b = (byte) in.read();
+					cmdparse.enqueue(b);
 				} catch (IOException e) {
 					System.err.println(e.toString());
 					close();
@@ -129,7 +133,14 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 
 	@Override
 	public void enqueueCommand(Command cmd) {
-		if (cmd != null)
-			out.println(cmd.serialize());
+		if (cmd != null) {
+			char[] cs = cmd.serialize();
+			for (char c : cs) {
+				byte b = (byte) (c - 127);
+				try {
+					out.write(b);
+				} catch (IOException e) { }
+			}
+		}
 	}
 }

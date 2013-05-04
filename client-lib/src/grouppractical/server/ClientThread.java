@@ -5,11 +5,12 @@ import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
 import grouppractical.client.commands.ConnectCommand;
 import grouppractical.client.commands.MInitialiseCommand;
+import grouppractical.client.commands.MPositionCommand;
+import grouppractical.utils.map.Position;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
 
@@ -28,8 +29,8 @@ class ClientThread extends Thread implements CommandListener {
 	private final int id;
 	private final Semaphore writeSem;
 	
-	private PrintWriter pw;
-	private BufferedReader br;
+	private OutputStream out;
+	private InputStream in;
 	/** Is the thread running or has it been closed */
 	private boolean running;
 	private ClientType clientType;
@@ -61,11 +62,14 @@ class ClientThread extends Thread implements CommandListener {
 		//Interrupts the thread (to break from the run loop)
 		this.interrupt();
 		//Closes the input and output streams
-		if (pw != null) pw.close();
-		if (br != null)
+		if (in != null)
 			try {
-				br.close();
-			} catch (IOException e) { }
+				in.close();
+			} catch (IOException e1) { }
+		if (out != null)
+			try {
+				out.close();
+			} catch (IOException e1) { }
 		try {
 			socket.close();
 		} catch (IOException e) { }
@@ -81,8 +85,8 @@ class ClientThread extends Thread implements CommandListener {
 	public void run() {
 		running = true;
 		try {
-			pw = new PrintWriter(socket.getOutputStream(), true);
-			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			out = socket.getOutputStream();
+			in = socket.getInputStream();
 		} catch (IOException e) {
 			close();
 		}
@@ -92,8 +96,10 @@ class ClientThread extends Thread implements CommandListener {
 			boolean word = false;
 			while (!word) {
 				try {
-					char c = (char) br.read();
-					cmdparse.enqueue(c);
+					while(running && in.available() <= 0);
+					if (!running) return;
+					byte b = (byte) in.read();
+					cmdparse.enqueue(b);
 				} catch (IOException e) {
 					System.err.println(e.toString());
 					close();
@@ -114,6 +120,10 @@ class ClientThread extends Thread implements CommandListener {
 					//For now, sends MInitialiseCommand back, which is interpreted as map all black
 					case MINITIALISE:
 						sendCommand(new MInitialiseCommand());
+						for (int y = 0; y < 1000; y++)
+							for (int x = 0; x < 1000; x++) {
+								sendCommand(new MPositionCommand(new Position(x,y,true, (short)50)));
+							}
 						break;
 					//The following commands should be passed to the main thread
 					case MPOSITION:
@@ -172,9 +182,16 @@ class ClientThread extends Thread implements CommandListener {
 	 * @param cmd Command to transmit
 	 */
 	private void sendCommand(Command cmd) {
-		writeSem.acquireUninterruptibly();
-		if (cmd != null)
-			pw.println(cmd.serialize());
-		writeSem.release();
+		if (cmd != null) {
+			writeSem.acquireUninterruptibly();
+			char[] cs = cmd.serialize();
+			for (char c : cs) {
+				byte b = (byte) (c - 127);
+				try {
+					out.write(b);
+				} catch (IOException e) { }
+			}
+			writeSem.release();
+		}
 	}
 }

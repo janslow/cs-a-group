@@ -21,7 +21,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string HOST = "192.168.52.50";
+        private const string HOST = "localhost";
         // Server
         private ServerConnection server;
         // Pre-generated list of lists: each list corresponds to the "line of sight" to check for each pixel

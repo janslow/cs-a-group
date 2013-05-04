@@ -1,6 +1,10 @@
 package grouppractical.robot;
 
-
+/**
+ * 
+ * @author Pete York
+ *
+ */
 public class Vector2D {
 	public Vector2D(double x, double y) {
 		this.x=x;this.y=y; 
@@ -23,7 +27,9 @@ public class Vector2D {
 
      public void rotate(double theta)
      {
-         x = Math.cos(theta) * x - Math.sin(theta) * y;
-         y = Math.sin(theta) * x + Math.cos(theta) * y;
+    	 double oldX = x;
+    	 double oldY = y;
+    	 x = Math.cos(theta) * oldX - Math.sin(theta) * oldY;
+         y = Math.sin(theta) * oldX + Math.cos(theta) * oldY;
      }
 }

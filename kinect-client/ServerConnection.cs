@@ -21,10 +21,10 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private const byte CONNECT = (byte)0x0B;
 
         // Ranges for conversion of serialized angle to degrees
-        private const double MIN_INT = -32767;
-        private const double MAX_INT = 32767;
+        private const int MIN_INT = -32768;
+        private const int MAX_INT = 32767;
         private const double MIN_DEGREES = 0.0;
-        private const double MAX_DEGREES = 359.98901;
+        private const double MAX_DEGREES = 359.99451;
 
         // State
         private MainWindow kinectMapping;
@@ -88,7 +88,13 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         public void SendPacket(byte[] data)
         {
             if (socket.Connected)
-                socket.Send(data);
+            {
+                //data = convertForSending(data);
+                foreach (byte d in data)
+                    if (debugNetwork)
+                        Console.WriteLine(d);
+                socket.Send(convertForSending(data));
+            }
         }
 
         public bool isConnected()
@@ -105,34 +111,16 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 try
                 {
                     socket.Receive(buffer);
+                    buffer = convertOnReceive(buffer);
                 }
                 catch (SocketException)
                 {
+                    Console.WriteLine("*** Socket exception");
                     this.close();
                 }
                 if (debugNetwork)
                     Console.WriteLine("> IN: " + buffer[0]);
-                if (i == cmdLength && !skipByte)
-                {
-                    // Just finished read and buffer contains first byte to drop
-                    skipByte = true;
-                }
-                else
-                {
-                    if (skipByte)
-                    {
-                        // Finished read and buffer contains second byte to drop
-                        skipByte = false;
-                        i = 0;
-                    }
-                    else
-                    {
-                        // Forward byte to be parsed
-                        if (debugNetwork)
-                            Console.WriteLine("> NQ: " + buffer[0]);
-                        enqueue(buffer);
-                    }
-                }
+                enqueue(buffer);
             }
         }
 
@@ -178,7 +166,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                     Vector2D v = ParseRStatusCommandPosition(bytes);
                     double x = v.getX();
                     double y = v.getY();
-                    double a = ParseRStatusCommandAngle(bytes);
+                    double a = ParseRStatusCommandAngle(bytes) + 90.0;
                     kinectMapping.updateRbotPosition(x, y, a);
                     bytes = null;
                 }  
@@ -193,19 +181,60 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             //Y-coordinate
             int y = ((bytes[3] & 0xFE) << 7) ^ bytes[4];
             if ((bytes[3] & 0x01) > 0) y *= -1;
-
-            if ((bytes[7] & 0x01) == 0) x = -x;
+           
             return new Vector2D(x, y);
         }
 
         private double ParseRStatusCommandAngle(byte[] bytes)
         {
             //Generates the serialized angle from the MSB and the LSB
-            int serialAngle = (bytes[6] << 7) + (bytes[7] >> 1);
+
+            int serialAngle = ((bytes[6] << 8) ^ bytes[7]) + MIN_INT;
 		    //Convert serial angle to degrees
-		    double z = (serialAngle - MIN_INT) / (MAX_INT - MIN_INT);
+		    double z = (serialAngle - (double)MIN_INT) / ((double)(MAX_INT - MIN_INT));
 
 		    return (z * (MAX_DEGREES - MIN_DEGREES)) + MIN_DEGREES;
         }
+
+        private byte[] convertForSending(byte[] bs)
+        {
+            for (int i = 0; i < bs.Count(); i++)
+                bs[i] = convertForSending(bs[i]);
+            return bs;
+        }
+
+        private byte convertForSending(byte b)
+        {
+            return (byte)((int)b - 127);
+            if (b < 128)
+            {
+                return b;
+            }
+            else
+            {
+                return (byte)(((int)b%128) - 128);
+            }
+        }
+
+        private byte[] convertOnReceive(byte[] bs)
+        {
+            for (int i = 0; i < bs.Count(); i++)
+                bs[i] = convertOnReceive(bs[i]);
+            return bs;
+        }
+
+        private byte convertOnReceive(byte b)
+        {
+            return (byte)((int)b + 127);
+            if (b >= 0)
+            {
+                return b;
+            }
+            else
+            {
+                return (byte)(((int)b % 128) + 128);
+            }
+        }
+
     }
 }

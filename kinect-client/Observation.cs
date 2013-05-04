@@ -14,7 +14,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 
         public static Observation vectorToObservation(Vector2D v, bool isOccupied, Vector2D rbotPos, double rbotAngle, int unitLength, int certainty)
         {
-            double x = v.getX();
+            double x = (-1.0)*v.getX();
             double y = v.getY();
             double thetaRadians = (90 - rbotAngle)*(Math.PI / 180) - Math.Atan2(y, x);
             double d = Math.Sqrt(x * x + y * y);

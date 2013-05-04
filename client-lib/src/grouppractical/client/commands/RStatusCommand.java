@@ -15,10 +15,10 @@ public class RStatusCommand implements Command {
 	public static final float MIN_BATT = 0f, MAX_BATT = 12f;
 	
 	/** Minimum rotation in degrees, radians and serialized integer */
-	public static final double MIN_DEGREES = -359.98901, MIN_RADIANS = -6.28299;
-	public static final short MIN_INT = Short.MIN_VALUE + 1;
+	public static final double MIN_DEGREES = 0, MIN_RADIANS = 0;
+	public static final short MIN_INT = Short.MIN_VALUE;
 	/** Maximum rotation in degrees, radians and serialized integer */
-	public static final double MAX_DEGREES = 359.98901, MAX_RADIANS = 6.28299;
+	public static final double MAX_DEGREES = 359.99451, MAX_RADIANS = 6.28309;
 	public static final short MAX_INT = Short.MAX_VALUE;
 	
 	private final Position position;
@@ -78,7 +78,7 @@ public class RStatusCommand implements Command {
 		float v = voltage > MAX_BATT ? MAX_BATT : (voltage < MIN_BATT ? MIN_BATT : voltage);
 		v = v * 20;
 		
-		int serial = getAngleSerial();
+		int serial = (int)getAngleSerial() - (int)MIN_INT;
 		
 		//X coordinate
 		bytes[1] = (char) ((0xFE & (x >> 7)) ^ (x_negative ? 0x01 : 0x00));
@@ -89,11 +89,9 @@ public class RStatusCommand implements Command {
 		//Battery Voltage
 		bytes[5] = (char) (0xFF & (int)v);
 		//MSB of distance
-		bytes[6] = (char)((Math.abs(serial) & 0x7F80) >> 7);
+		bytes[6] = (char)((serial & 0xFF00) >> 8);
 		//LSB of distance
-		bytes[7] = (char)((Math.abs(serial) & 0x007F) << 1);
-		//Sets bit 8 of the LSB to be the direction
-		if (serial > 0) bytes[7] = (char) (bytes[7] | 0x01);
+		bytes[7] = (char)(serial & 0xFF);
 		return bytes;
 	}
 	

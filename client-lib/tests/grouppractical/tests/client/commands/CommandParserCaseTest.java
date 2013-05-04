@@ -49,7 +49,7 @@ public class CommandParserCaseTest {
 		Object[][][] xss = new Object[][][] {
 				data,
 				//Test MPOSITION(position) command
-//				mPositionCommandData(),
+				mPositionCommandData(),
 				//Test RSTATUS(position,voltage) command
 				rStatusCommandData(),
 				//Test CONNECT(clientType) command
@@ -71,10 +71,10 @@ public class CommandParserCaseTest {
 		//Create lists of valid values to test
 		int[] xs = new int[] { MPositionCommand.MIN_X - 1, MPositionCommand.MIN_X,
 				(MPositionCommand.MIN_X + MPositionCommand.MAX_X) / 2, MPositionCommand.MAX_X,
-				MPositionCommand.MAX_X + 1 },
+				MPositionCommand.MAX_X + 1, 857 },
 			ys = new int[] { MPositionCommand.MIN_Y - 1, MPositionCommand.MIN_Y,
 				(MPositionCommand.MIN_Y + MPositionCommand.MAX_Y) / 2, MPositionCommand.MAX_Y,
-				MPositionCommand.MAX_Y + 1 };
+				MPositionCommand.MAX_Y + 1, 654 };
 		short[] certs = new short[] { Position.MIN_CERTAINTY - 1, Position.MIN_CERTAINTY,
 				(Position.MIN_CERTAINTY + Position.MAX_CERTAINTY) / 2, Position.MAX_CERTAINTY };
 		boolean[] occupieds = new boolean[] { true, false };
@@ -106,7 +106,7 @@ public class CommandParserCaseTest {
 		float[] volts = new float[] { RStatusCommand.MIN_BATT - 1, RStatusCommand.MIN_BATT,
 				(RStatusCommand.MIN_BATT + RStatusCommand.MAX_BATT) / 2, RStatusCommand.MAX_BATT,
 				RStatusCommand.MAX_BATT + 1};
-		short[] angles = new short[] { RStatusCommand.MIN_INT - 1, RStatusCommand.MIN_INT,
+		short[] angles = new short[] { (short) (RStatusCommand.MIN_INT - 1), RStatusCommand.MIN_INT,
 				(RStatusCommand.MIN_INT + RStatusCommand.MAX_INT) / 2, RStatusCommand.MAX_INT,
 				(short) (RStatusCommand.MAX_INT + 1)};
 		

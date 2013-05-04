@@ -6,7 +6,7 @@ public class Vector2D {
 		this.x=x;this.y=y; 
 	}
 
-	double x, y;
+	private double x, y;
 	
 	public double getX(){
 		return x;

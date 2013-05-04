@@ -60,7 +60,7 @@ public class RStatusCommandTest extends CommandTest {
 				RStatusCommand.MAX_Y + 1 };
 		float[] volts = new float[] { RStatusCommand.MIN_BATT - 1, RStatusCommand.MIN_BATT,
 				RStatusCommand.MAX_BATT, RStatusCommand.MAX_BATT + 1 };
-		short[] angles = new short[] { RStatusCommand.MIN_INT - 1, RStatusCommand.MIN_INT,
+		short[] angles = new short[] { (short) (RStatusCommand.MIN_INT - 1), RStatusCommand.MIN_INT,
 				(RStatusCommand.MIN_INT + RStatusCommand.MAX_INT) / 2, RStatusCommand.MAX_INT,
 				(short) (RStatusCommand.MAX_INT + 1)};
 		
@@ -105,12 +105,15 @@ public class RStatusCommandTest extends CommandTest {
 		int ay = ((actual[3] & 0xFE) << 7) ^ actual[4];
 		if ((actual[3] & 0x01) > 0) ay *= -1;
 		
+		int aa = ((actual[6] << 8) ^ actual[7]) + RStatusCommand.MIN_INT;
+		
 		float av = (float)actual[5] / 20;
 		
 		if (isValid) {
 			assertEquals("X Coordinate is not correct",position.getX(),ax);
 			assertEquals("Y Coordinate is not correct",position.getY(),ay);
 			assertEquals("Certainty is not correct",voltage,av, 0.1f);
+			assertEquals("Angle is not correct",angle,aa);
 		}
 	}
 	

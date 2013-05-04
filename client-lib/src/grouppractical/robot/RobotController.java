@@ -16,7 +16,7 @@ public class RobotController implements CommandListener {
 	private final Semaphore sem;
 	
 	private Vector2D pos;
-	/** Direction in Radians */
+	/** Direction in Radians from y-axis (anticlockwise) */
 	private double angle;
 	/** Is the robot's position locked? */
 	private boolean locked;

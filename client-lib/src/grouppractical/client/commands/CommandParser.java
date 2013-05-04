@@ -218,7 +218,7 @@ public class CommandParser {
 	private RStatusCommand parseRStatus(char[] chars) {
 		//X-coordinate
 		int x = ((chars[1] & 0xFE) << 7) ^ chars[2];
-		if ((chars[1] & 0x01) == 0) x *= -1;
+		if ((chars[1] & 0x01) > 0) x *= -1;
 		//Y-coordinate
 		int y = ((chars[3] & 0xFE) << 7) ^ chars[4];
 		if ((chars[3] & 0x01) > 0) y *= -1;
@@ -226,8 +226,7 @@ public class CommandParser {
 		float voltage = (float)chars[5] / 20;
 		
 		//Generates the serialized angle from the MSB and the LSB
-		int angle = (chars[6] << 7) + (chars[7] >> 1);
-		if ((chars[7] & 0x01) == 0) x = -x;
+		int angle = ((chars[6] << 8) ^ chars[7]) + RStatusCommand.MIN_INT;
 		
 		return new RStatusCommand(new Position(x,y,false, Position.MAX_CERTAINTY), voltage, (short) angle);
 	}

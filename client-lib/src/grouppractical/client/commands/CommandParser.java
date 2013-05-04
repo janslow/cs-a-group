@@ -218,7 +218,7 @@ public class CommandParser {
 	private RStatusCommand parseRStatus(char[] chars) {
 		//X-coordinate
 		int x = ((chars[1] & 0xFE) << 7) ^ chars[2];
-		if ((chars[1] & 0x01) > 0) x *= -1;
+		if ((chars[1] & 0x01) == 0) x *= -1;
 		//Y-coordinate
 		int y = ((chars[3] & 0xFE) << 7) ^ chars[4];
 		if ((chars[3] & 0x01) > 0) y *= -1;

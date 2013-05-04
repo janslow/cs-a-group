@@ -51,7 +51,7 @@ public class CommandParserCaseTest {
 				//Test MPOSITION(position) command
 //				mPositionCommandData(),
 				//Test RSTATUS(position,voltage) command
-//				rStatusCommandData(),
+				rStatusCommandData(),
 				//Test CONNECT(clientType) command
 				connectCommandData()
 		};

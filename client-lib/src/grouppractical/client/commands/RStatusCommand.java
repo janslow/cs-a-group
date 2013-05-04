@@ -15,7 +15,7 @@ public class RStatusCommand implements Command {
 	public static final float MIN_BATT = 0f, MAX_BATT = 12f;
 	
 	/** Minimum rotation in degrees, radians and serialized integer */
-	public static final double MIN_DEGREES = 0, MIN_RADIANS = 0;
+	public static final double MIN_DEGREES = -359.98901, MIN_RADIANS = -6.28299;
 	public static final short MIN_INT = Short.MIN_VALUE + 1;
 	/** Maximum rotation in degrees, radians and serialized integer */
 	public static final double MAX_DEGREES = 359.98901, MAX_RADIANS = 6.28299;

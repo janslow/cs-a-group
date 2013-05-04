@@ -63,7 +63,7 @@ public class RobotController implements CommandListener {
 			if (locked) break;
 			RRotateCommand anglecmd = (RRotateCommand) cmd;
 			double turnAngle = (double) anglecmd.getAngleRadians();
-			angle += turnAngle;
+			angle -= turnAngle;
 			changed = true;
 			break;
 		case RLOCK:

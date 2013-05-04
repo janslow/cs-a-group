@@ -5,8 +5,6 @@ import grouppractical.client.commands.Command;
 import grouppractical.client.commands.CommandParser;
 import grouppractical.client.commands.ConnectCommand;
 import grouppractical.client.commands.MInitialiseCommand;
-import grouppractical.client.commands.MPositionCommand;
-import grouppractical.utils.map.Position;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,10 +118,6 @@ class ClientThread extends Thread implements CommandListener {
 					//For now, sends MInitialiseCommand back, which is interpreted as map all black
 					case MINITIALISE:
 						sendCommand(new MInitialiseCommand());
-						for (int y = 0; y < 1000; y++)
-							for (int x = 0; x < 1000; x++) {
-								sendCommand(new MPositionCommand(new Position(x,y,true, (short)50)));
-							}
 						break;
 					//The following commands should be passed to the main thread
 					case MPOSITION:

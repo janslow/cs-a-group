@@ -14,20 +14,11 @@ namespace Microsoft.Samples.Kinect.DepthBasics
 
         public static Observation vectorToObservation(Vector2D v, bool isOccupied, Vector2D rbotPos, double rbotAngle, int unitLength, int certainty)
         {
-            double x = (-1.0)*v.getX();
-            double y = v.getY();
-            double thetaRadians = (90 - rbotAngle)*(Math.PI / 180) - Math.Atan2(y, x);
-            double d = Math.Sqrt(x * x + y * y);
+            v.rotate(rbotAngle - 90);
+            v.translate(rbotPos);
+            v.scale(1.0 / unitLength);
 
-            double newX = rbotPos.getX() + d * Math.Cos(thetaRadians);
-            double newY = rbotPos.getY() - d * Math.Sin(thetaRadians);
-
-            newX = newX / unitLength;
-            newY = newY / unitLength;
-
-            int intX = (int)newX;
-            int intY = (int)newY;
-            return new Observation(intX, intY, isOccupied, certainty);
+            return new Observation((int)v.getX(), (int)v.getY(), isOccupied, certainty);
         }
 
         public Observation(int x, int y, bool isOccupied, int certainty)

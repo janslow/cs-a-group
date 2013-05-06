@@ -35,8 +35,39 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         public void rotate(double thetaDegrees)
         {
             double thetaRadians = thetaDegrees * Math.PI / 180;
-            x = Math.Cos(thetaRadians) * x - Math.Sin(thetaRadians) * y;
-            y = Math.Sin(thetaRadians) * x + Math.Cos(thetaRadians) * y;
+            double oldX = x;
+            double oldY = y;
+            x = Math.Cos(thetaRadians) * oldX - Math.Sin(thetaRadians) * oldY;
+            y = Math.Sin(thetaRadians) * oldX + Math.Cos(thetaRadians) * oldY;
         }
+
+        public void scale(double scaleFactor)
+        {
+            x = x * scaleFactor;
+            y = y * scaleFactor;
+        }
+
+
+        public void reflectInXaxis()
+        {
+            y = (-1.0) * y;
+        }
+
+        public void reflectInYaxis()
+        {
+            x = (-1.0) * x;
+        }
+
+        public double getModulus()
+        {
+            return (Math.Sqrt(x * x + y * y));
+        }
+
+        public double getModulusSquared()
+        {
+            return (x * x + y * y);
+        }
+
+
     }
 }

@@ -25,7 +25,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         // Server
         private ServerConnection server;
         // Pre-generated list of lists: each list corresponds to the "line of sight" to check for each pixel
-        private List<List<Tuple<int, int>>> pointsToCheck = new List<List<Tuple<int, int>>>();
+        private List<List<Vector2D>> pointsToCheck;
         // Ready to read next set of observations
         private bool readyToRead = false;
         // Number of frames read this read
@@ -74,7 +74,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             Console.WriteLine();
 
             // Read from file the pre-computed list of points in the view of the Kinect sensor
-            readPointsToCheck();
+            string pointsFilePath = Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\GitHub\\cs-a-group\\kinect-client\\points.txt");
+            PointsFileReader pr = new PointsFileReader(pointsFilePath);
+            pointsToCheck = pr.getPointsToCheck();
 
             // Setup server connection
             server = new ServerConnection(HOST, "Remote Kinect Client", this);
@@ -104,7 +106,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 this.depthPixels = new DepthImagePixel[this.sensor.DepthStream.FramePixelDataLength];
 
                 // Initialise VisualLightWriter imageGenerator
-                imageGenerator = new VisualLightWriter("kinectImgs", "img", sensor.ColorStream.FrameWidth, sensor.ColorStream.FrameHeight, sensor.ColorStream.FramePixelDataLength);
+                string imgFilePath = Path.Combine(Environment.ExpandEnvironmentVariables("%userprofile%"), "Documents\\GitHub\\cs-a-group\\kinect-client\\kinectImgs");
+                imageGenerator = new VisualLightWriter(imgFilePath, "img", sensor.ColorStream.FrameWidth, sensor.ColorStream.FrameHeight, sensor.ColorStream.FramePixelDataLength);
 
                 // Add an event handler to be called whenever there is new depth frame data
                 this.sensor.DepthFrameReady += this.SensorDepthFrameReady;
@@ -216,6 +219,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                             double yFromRBot = Math.Sin(angle) * depth;
                             Vector2D posFromRBot = new Vector2D(xFromRBot, yFromRBot);
 
+                            // Adjust for kinect's sensor reading in flipped view
+                            posFromRBot.reflectInYaxis();
+
                             // Check range and add obstacle
                             if (1200 <= depth && depth <= 3000)
                                 occupiedVectors.Add(posFromRBot);
@@ -225,14 +231,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                             {
                                 for (int k = 0; k < pointsToCheck[i].Count; ++k)
                                 {
-                                    Tuple<int, int> v = pointsToCheck[i][k];
-                                    // convert to millimeters
-                                    int x = v.Item1 * 10;
-                                    int y = v.Item2 * 10;
-                                    int distanceSq = x * x + y * y;
-
-                                    if (distanceSq < depth * depth)
-                                        freeVectors.Add(new Vector2D(x, y));
+                                    Vector2D v = pointsToCheck[i][k];
+                                    if (v.getModulusSquared() < depth * depth)
+                                        freeVectors.Add(new Vector2D((-1.0)*v.getX(), v.getY()));
                                 }
                             }
                         }
@@ -251,6 +252,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                             server.SendPacket(o.serialize());
                         Console.WriteLine("Observation set packets sent @ " + System.DateTime.Now);
                         framesRead++;
+                        if (framesRead == framesPerRead)
+                            server.SendPacket(ServerCommands.getRUnlockMessage());
                     }
                     
                 }
@@ -260,46 +263,6 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private double DegreesToRadians(double angle)
         {
             return Math.PI * angle / 180.0;
-        }
-        private void readPointsToCheck()
-        {
-            List<Tuple<int, int>> listOfCoords = new List<Tuple<int, int>>();
-            String sLine = "";
-            StreamReader objReader = new StreamReader("points.txt");
-            bool even = true;
-            int x = 0;
-            int y = 0;
-            while (sLine != null)
-            {
-
-                sLine = objReader.ReadLine();
-
-                if (sLine != null && sLine != "")
-                {
-                    if (sLine == "new")
-                    {
-                        pointsToCheck.Add(listOfCoords);
-                        listOfCoords = new List<Tuple<int, int>>();
-                        even = true;
-                    }
-                    else
-                    {
-                        if (even)
-                        {
-                            x = Convert.ToInt32(sLine);
-                            even = false;
-                        }
-                        else
-                        {
-                            y = Convert.ToInt32(sLine);
-                            Tuple<int, int> point = new Tuple<int, int>(x, y);
-                            listOfCoords.Add(point);
-                            even = true;
-                        }
-                    }
-                }
-            }
-            objReader.Close();
         }
     }
 }

@@ -61,6 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ServerCommands.cs" />
+    <Compile Include="PointsFileReader.cs" />
     <Compile Include="VisualLightWriter.cs" />
     <Compile Include="ServerConnection.cs" />
     <Compile Include="Observation.cs" />

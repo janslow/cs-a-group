@@ -162,9 +162,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		mapHeight = map.getHeight();
 		graphics = (Graphics2D) img.getGraphics();
 		// initialise to new graphic (black background)
-		for (int i = 0; i < map.getWidth(); i++)
-			for (int j = 0; j < map.getHeight(); j++)
-				updateMapPosition(new Position(i, j, false, (short) 0));
+		paintBackground(graphics,map.getWidth(), map.getHeight());
 		// add any known points in map
 		Iterator<Position> it = map.iterator();
 		while (it.hasNext()) {
@@ -173,6 +171,13 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		}
 		// repaint entire panel in case dimensions have changed
 		this.repaint();
+	}
+	
+	private void paintBackground(Graphics2D g, int width, int height) {
+		Color oldColour = g.getColor();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, width, height);
+		g.setColor(oldColour);
 	}
 
 	@Override

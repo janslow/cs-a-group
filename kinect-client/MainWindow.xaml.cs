@@ -34,6 +34,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private const int framesPerRead = 2;
         // Number of millimeters to 1 global unit
         private const int UNIT = 50;
+        // Margin of pixels to ignore (total pixels ignored per frame is 2*MARGIN)
+        private const int MARGIN = 0;
         /// <summary>
         /// Robot position in millimeters
         /// </summary>
@@ -207,7 +209,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                         int start = width * (height / 2 - 1);
 
                         // Go through each pixel of the middle line
-                        for (int i = 0; i < width; ++i)
+                        for (int i = 0 + MARGIN; i < width - MARGIN; ++i)
                         {
                             // Get the depth corresponding to this pixel from the Kinect [in millimiters]
                             short depth = this.depthPixels[i + start].Depth;

@@ -112,11 +112,7 @@ public class CommandParser {
 				}
 				if ("true".equals(System.getenv("debug"))) {
 					for (char x : chars) System.out.print(Integer.toHexString(x) + " ");
-<<<<<<< HEAD
 					System.out.println("\t\t"+ q.peek().toString());
-=======
-					System.out.println("\t\t" + q.peek().toString());
->>>>>>> Added serial connection
 				}
 			}
 			chars = null;

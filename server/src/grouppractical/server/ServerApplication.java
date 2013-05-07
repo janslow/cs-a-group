@@ -1,7 +1,10 @@
 package grouppractical.server;
 
+import gnu.io.PortInUseException;
 import grouppractical.client.commands.CommandConsole;
 import grouppractical.robot.RobotController;
+import grouppractical.server.serial.SerialPortConnection;
+import grouppractical.server.serial.SerialPortSelectorDialog;
 
 import java.io.IOException;
 
@@ -13,6 +16,7 @@ public class ServerApplication {
 	protected final CommandConsole con;
 	protected final MultiServerThread server;
 	protected final RobotController rbotController;
+	protected final SerialPortConnection serial;
 	
 	/**
 	 * Constructs the server 
@@ -34,6 +38,20 @@ public class ServerApplication {
 		this.server = server;
 		this.rbotController = new RobotController();
 		
+		SerialPortSelectorDialog serialDialog = new SerialPortSelectorDialog(con);
+		serialDialog.setVisible(true);
+		SerialPortConnection serial = null;
+		if (serialDialog.getSelected() != null)
+			try {
+				serial = new SerialPortConnection(serialDialog.getSelected(), rbotController);
+			} catch (PortInUseException e) {
+				con.println("Serial Port is already in use");
+			} catch (IOException e) {
+				con.println("Unable to connect to Serial Port");
+				e.printStackTrace();
+			}
+		this.serial = serial;
+		
 		//Runs the server task
 		run();
 	}
@@ -45,6 +63,7 @@ public class ServerApplication {
 		if (server != null) {
 			server.addCommandListener(con);
 			server.addCommandListener(rbotController);
+			server.addCommandListener(serial);
 			rbotController.addCommandListener(server);
 			
 			server.start();

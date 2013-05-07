@@ -41,6 +41,7 @@ public class MultiServerThread extends Thread implements CommandListener {
 		this.serverSocket = new ServerSocket(PORT);
 		this.host = serverSocket.getInetAddress().getHostAddress();
 		this.listeners = new EventListenerList();
+		attachShutDownHook();
 	}
 	
 	/**
@@ -128,5 +129,16 @@ public class MultiServerThread extends Thread implements CommandListener {
 	 */
 	public void removeCommandListener(CommandListener l) {
 		listeners.remove(CommandListener.class, l);
+	}
+	
+	public void attachShutDownHook(){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				close();
+				System.out.println("Shutdown Network Server");
+			}
+		});
+		System.out.println("Network Server Shutdown Hook Attached.");
 	}
 }

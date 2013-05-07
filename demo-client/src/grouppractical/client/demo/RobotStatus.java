@@ -40,10 +40,10 @@ public class RobotStatus extends JFrame implements RobotListener {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// construct window contents
-		batteryLevel = new JLabel("?%");
-		robotXposition = new JLabel("?x?");
-		robotYposition = new JLabel("?y?");
-		robotAngle = new JLabel("?a?");
+		batteryLevel = new JLabel("");
+		robotXposition = new JLabel("");
+		robotYposition = new JLabel("");
+		robotAngle = new JLabel("");
 		JLabel headerLabel = new JLabel("Robot Status:");
 		JLabel xLabel = new JLabel("x co-ordinate:");
 		JLabel yLabel = new JLabel("y co-ordinate:");
@@ -92,12 +92,12 @@ public class RobotStatus extends JFrame implements RobotListener {
 
 	@Override
 	public void updateAngle(double degrees, double radians) {
-		robotAngle.setText(Double.toString(degrees) + "¡");
+		robotAngle.setText(Integer.toString((int) degrees) + "¡");
 	}
 
 	@Override
 	public void updateVoltage(float voltage) {
-		batteryLevel.setText(Float.toString(voltage));
+		batteryLevel.setText(String.format("%.2f", voltage));
 	}
 
 	@Override

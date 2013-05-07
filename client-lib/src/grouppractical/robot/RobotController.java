@@ -54,7 +54,7 @@ public class RobotController implements CommandListener {
 			if (locked) break;
 			RDistanceCommand distcmd = (RDistanceCommand) cmd;
 			double dist = (double) distcmd.getDistance();
-			Vector2D v = new Vector2D(0.0, dist);
+			Vector2D v = new Vector2D(0.0, dist/5.0);
 			v.rotate(angle);
 			pos.translate(v);
 			changed = true;

@@ -8,8 +8,8 @@
 #define LmotorC             7  // Analog input 07
 #define Charger            13  // Low=ON High=OFF
 
-#define LeftPWM           128
-#define RightPWM          128
+#define LeftPWM           230
+#define RightPWM          170
 
 #define Leftmaxamps        600     // set overload current for left motor 
 #define Rightmaxamps       600     // set overload current for right motor 
@@ -18,6 +18,8 @@
 #define batvolt            487     // This is the nominal battery voltage reading. Peak charge can only occur above this voltage.
 #define lowvolt            410     // This is the voltage at which the speed controller goes into recharge mode.
 #define chargetimeout   300000     // If the battery voltage does not change in this number of milliseconds then stop charging.
+
+#define DEBUG             false
 
 unsigned long lastUpdate = 0;
 unsigned long commandExpire = 0;
@@ -33,7 +35,9 @@ void setup() {
 void loop() {
   if (millis() - lastUpdate > 1000) {
     unsigned int v = analogRead(Battery) >> 2;
-    Serial.write(v);
+    lastUpdate = millis();
+    if (DEBUG) Serial.println(v);
+    else Serial.write(v & 0xFF);
   }
   
   if (inCommand && millis() > commandExpire) {
@@ -41,6 +45,7 @@ void loop() {
     analogWrite(LmotorB,0);
     analogWrite(RmotorA,0);
     analogWrite(RmotorB,0);
+    if (DEBUG) Serial.println("Done");
     inCommand = false;
   }
   
@@ -48,37 +53,34 @@ void loop() {
     int c = Serial.read();
     inCommand = true;
     switch (c) {
-    case 0: //Forward
+    case 0:
+    case '0': //Forward
       analogWrite(LmotorA,0);
-      analogWrite(LmotorB,LeftPWM);
       analogWrite(RmotorA,0);
-      analogWrite(RmotorB,RightPWM);
-      commandExpire = millis() + 5000;
-    case 1: //Reverse
-      analogWrite(LmotorA,LeftPWM);
-      analogWrite(LmotorB,0);
-      analogWrite(RmotorA,RightPWM);
-      analogWrite(RmotorB,0);
-      commandExpire = millis() + 5000;
-    case 2:
-      analogWrite(LmotorA,LeftPWM);
-      analogWrite(LmotorB,0);
-      analogWrite(RmotorA,0);
-      analogWrite(RmotorB,RightPWM);
-      commandExpire = millis() + 5000;
-    case 3:
-      analogWrite(LmotorA,0);
       analogWrite(LmotorB,LeftPWM);
-      analogWrite(RmotorA,RightPWM);
+      analogWrite(RmotorB,RightPWM);
+      commandExpire = millis() + 80;
+      if (DEBUG) Serial.println("Forward");
+      break;
+    case 1:
+    case '1': //Reverse
+      analogWrite(LmotorB,0);
       analogWrite(RmotorB,0);
-      commandExpire = millis() + 5000;
+      analogWrite(RmotorA,RightPWM);
+      analogWrite(LmotorA,LeftPWM);
+      commandExpire = millis() + 81;
+      if (DEBUG) Serial.println("Backward");
+      break;
     case 4:
+    case '4':
       analogWrite(LmotorA,0);
       analogWrite(LmotorB,0);
       analogWrite(RmotorA,0);
       analogWrite(RmotorB,0);
       inCommand = false;
       commandExpire = millis();
+      if (DEBUG) Serial.println("Emergency Stop");
+      break;
     }
   }
 }

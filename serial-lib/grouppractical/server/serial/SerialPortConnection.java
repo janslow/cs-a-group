@@ -25,7 +25,7 @@ public class SerialPortConnection implements CommandListener, SerialPortEventLis
 	private static final int DATA_RATE = 9600;
 	
 	private final SerialPort serialPort;
-//	private final InputStream input;
+	private final InputStream input;
 	private final OutputStream output;
 	private final RobotController controller;
 	
@@ -42,20 +42,20 @@ public class SerialPortConnection implements CommandListener, SerialPortEventLis
 			e.printStackTrace();
 		}
 		
-//		input = serialPort.getInputStream();
+		input = serialPort.getInputStream();
 		output = serialPort.getOutputStream();
 		
-//		try {
-//			serialPort.addEventListener(this);
-//		} catch (TooManyListenersException e) {
-//			// This should not happen (only one listener)
-//			e.printStackTrace();
-//		}
-//		serialPort.notifyOnDataAvailable(true);
+		try {
+			serialPort.addEventListener(this);
+		} catch (TooManyListenersException e) {
+			// This should not happen (only one listener)
+			e.printStackTrace();
+		}
+		serialPort.notifyOnDataAvailable(true);
 		
 		this.controller = controller;
 		
-//		attachShutDownHook();
+		attachShutDownHook();
 	}
 	@Override
 	public void enqueueCommand(Command cmd) {
@@ -93,26 +93,26 @@ public class SerialPortConnection implements CommandListener, SerialPortEventLis
 	
 	@Override
 	public void serialEvent(SerialPortEvent e) {
-//		switch (e.getEventType()) {
-//		case SerialPortEvent.DATA_AVAILABLE:
-//			try {
-//				if (input.available() > 0) {
-////					float voltage = input.read();
-////					voltage = voltage / 16.84f;
-////					controller.setVoltage(voltage);
-//				}
-//			} catch (IOException e1) { }
-//		}
+		switch (e.getEventType()) {
+		case SerialPortEvent.DATA_AVAILABLE:
+			try {
+				if (input.available() > 0) {
+					float voltage = input.read();
+					voltage = voltage / 16.84f;
+					controller.setVoltage(voltage);
+				}
+			} catch (IOException e1) { }
+		}
 	}
 	
-//	public void attachShutDownHook(){
-//		Runtime.getRuntime().addShutdownHook(new Thread() {
-//			@Override
-//			public void run() {
-//				close();
-//				System.out.println("Shutdown Serial Connection");
-//			}
-//		});
-//		System.out.println("Serial Connection Shutdown Hook Attached.");
-//	}
+	public void attachShutDownHook(){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				close();
+				System.out.println("Shutdown Serial Connection");
+			}
+		});
+		System.out.println("Serial Connection Shutdown Hook Attached.");
+	}
 }

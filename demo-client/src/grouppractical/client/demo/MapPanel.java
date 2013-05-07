@@ -107,7 +107,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		// set graphics colour
 		if (certainty == 0) {
 			// coordinate not examined
-			g.setColor(Color.BLACK);
+			g.setColor(Color.DARK_GRAY);
 		} else {
 			// coordinate examined - print white, and then over-print red or
 			// grey over for obstacle/no obstacle
@@ -118,7 +118,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 			if (obstacle) {
 				g.setColor(Color.RED);
 			} else {
-				g.setColor(Color.GRAY);
+				g.setColor(Color.LIGHT_GRAY);
 			}
 
 			// set new alpha (transparency parameter)
@@ -175,7 +175,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	
 	private void paintBackground(Graphics2D g, int width, int height) {
 		Color oldColour = g.getColor();
-		g.setColor(Color.BLACK);
+		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, width, height);
 		g.setColor(oldColour);
 	}
@@ -197,7 +197,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 			// update buffered image
 			Color oldColour = graphics.getColor();
 			// set colour
-			graphics.setColor(Color.GREEN);
+			graphics.setColor(Color.BLUE);
 			graphics.fillRect(x * PIX_WIDTH, (mapHeight - 1 - y) * PIX_WIDTH,
 					PIX_WIDTH, PIX_WIDTH);
 			// clear current robot position

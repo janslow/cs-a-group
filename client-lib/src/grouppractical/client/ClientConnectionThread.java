@@ -77,7 +77,7 @@ public class ClientConnectionThread extends Thread implements CommandListener {
 					switch (cmd.getCommandType()) {
 					case MINITIALISE:
 						for (MapListener l : listeners.getListeners(MapListener.class))
-							l.updateMap(new HorizontalNode(0,1000,0,1000));
+							l.updateMap(new HorizontalNode(0,200,0,200));
 						break;
 					case MPOSITION:
 						for (MapListener l : listeners.getListeners(MapListener.class))

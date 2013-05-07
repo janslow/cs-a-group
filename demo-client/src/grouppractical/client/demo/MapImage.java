@@ -42,7 +42,7 @@ public class MapImage extends JFrame {
 		
 		// Create save button and configure MapPane
 		JPanel pane = new JPanel(new BorderLayout());
-		int pix_width = 1;
+		int pix_width = 3;
 		mapPanel = new MapPanel(pix_width);
 		conn.addMapListener(mapPanel);
 		conn.addRobotListener(mapPanel);

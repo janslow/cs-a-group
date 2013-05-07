@@ -7,6 +7,7 @@ import grouppractical.utils.map.Position;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -70,6 +71,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	 */
 	public MapPanel(int unitWidth) {
 		PIX_WIDTH = unitWidth;
+		this.setPreferredSize(new Dimension(650,650));
 	}
 
 	/**
@@ -176,7 +178,7 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 	private void paintBackground(Graphics2D g, int width, int height) {
 		Color oldColour = g.getColor();
 		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, width*PIX_WIDTH, height*PIX_WIDTH);
 		g.setColor(oldColour);
 	}
 
@@ -194,17 +196,16 @@ public class MapPanel extends JPanel implements MapListener, RobotListener {
 		// if graphics null, update map hasn't been called yet, so wait for
 		// server to respond to MAP_LISTENER command. Otherwise update.
 		if (graphics != null) {
+			// clear current robot position
+			updateMapPosition(new Position(robotX,robotY,false,(short)127));
 			// update buffered image
 			Color oldColour = graphics.getColor();
 			// set colour
 			graphics.setColor(Color.BLUE);
-			graphics.fillRect(x * PIX_WIDTH, (mapHeight - 1 - y) * PIX_WIDTH,
-					PIX_WIDTH, PIX_WIDTH);
-			// clear current robot position
-			updateMapPosition(new Position(robotX,robotY,false,(short)127));
+			graphics.fillRect(x, (mapHeight - y - 1), 1, 1);
 			// reset colour
 			graphics.setColor(oldColour);
-			this.repaint(x * PIX_WIDTH, (mapHeight - 1 - y) * PIX_WIDTH,
+			this.repaint(x * PIX_WIDTH, (mapHeight - y - 1) * PIX_WIDTH,
 					PIX_WIDTH, PIX_WIDTH);
 			robotX = x;
 			robotY = y;
